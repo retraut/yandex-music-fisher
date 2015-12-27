@@ -1,6 +1,6 @@
 /* global chrome, storage, utils, downloader, ga */
 
-(()=> {
+(() => {
     'use strict';
 
     let distributionUrl;

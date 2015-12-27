@@ -1,6 +1,6 @@
 /* global chrome */
 
-(()=> {
+(() => {
     'use strict';
 
     let $ = document.getElementById.bind(document);
@@ -139,16 +139,16 @@
     $('addBtn').addEventListener('click', () => {
         $('downloadBtn').classList.remove('active');
         $('addBtn').classList.add('active');
-        $('addContainer').classList.remove('hide');
-        $('downloadContainer').classList.add('hide');
+        $('addContainer').classList.remove('hidden');
+        $('downloadContainer').classList.add('hidden');
     });
 
     $('downloadBtn').addEventListener('click', () => {
         $('addBtn').classList.remove('active');
         $('downloadBtn').classList.add('active');
-        $('addContainer').classList.add('hide');
-        $('downloadContainer').classList.remove('hide');
-        $('errorContainer').classList.add('hide');
+        $('addContainer').classList.add('hidden');
+        $('downloadContainer').classList.remove('hidden');
+        $('errorContainer').classList.add('hidden');
         startUpdater();
     });
 
@@ -245,8 +245,8 @@
     });
 
     let hidePreloader = () => {
-        $('preloader').classList.add('hide');
-        $('addContainer').classList.remove('hide');
+        $('preloader').classList.add('hidden');
+        $('addContainer').classList.remove('hidden');
         $('downloadBtn').classList.remove('disabled');
     };
 
@@ -419,9 +419,9 @@
     let onAjaxFail = error => {
         backgroundPage.utils.logError(error);
         hidePreloader();
-        $('addContainer').classList.add('hide');
+        $('addContainer').classList.add('hidden');
         $('addBtn').classList.add('disabled');
-        $('errorContainer').classList.remove('hide');
+        $('errorContainer').classList.remove('hidden');
     };
 
     let adaptToSmallDeviceHeight = tabHeight => {

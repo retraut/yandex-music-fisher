@@ -18,7 +18,6 @@
         },
         current: {}
     };
-    window.storage = storage;
 
     storage.init = () => {
         let keys = Object.keys(storage.defaults);
@@ -57,5 +56,7 @@
             chrome.storage.local.set(data, resolve);
         });
     });
+
+    window.storage = storage;
 
 })();

@@ -4,7 +4,6 @@
     'use strict';
 
     let yandex = {};
-    window.yandex = yandex;
 
     yandex.getTrackUrl = trackId => {
         let url = 'https://music.yandex.%domain%/api/v2.0/handlers/track/%id%/download'
@@ -71,5 +70,7 @@
             .replace('%id%', labelId);
         return utils.ajax(url, 'json');
     };
+
+    window.yandex = yandex;
 
 })();
