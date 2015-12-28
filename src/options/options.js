@@ -1,6 +1,6 @@
 /* global chrome */
 
-(()=> {
+(() => {
     'use strict';
 
     let $ = document.getElementById.bind(document);

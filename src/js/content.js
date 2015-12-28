@@ -1,6 +1,6 @@
 /* global chrome */
 
-(()=> {
+(() => {
     'use strict';
 
     var getCurrentTrackUrl = () => {

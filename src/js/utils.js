@@ -1,10 +1,9 @@
 /* global chrome, storage, ga, downloader */
 
-(()=> {
+(() => {
     'use strict';
 
     let utils = {};
-    window.utils = utils;
 
     utils.ajax = (url, type, onProgress) => new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
@@ -235,5 +234,7 @@
             }
         }).catch(utils.logError);
     });
+
+    window.utils = utils;
 
 })();

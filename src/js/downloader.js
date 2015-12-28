@@ -1,6 +1,6 @@
 /* global storage, yandex, chrome, utils, ga, ID3Writer */
 
-(()=> {
+(() => {
     'use strict';
 
     let downloader = {
@@ -20,7 +20,6 @@
         downloads: [],
         activeThreadCount: 0
     };
-    window.downloader = downloader;
 
     downloader.runAllThreads = () => {
         for (let i = 0; i < storage.current.downloadThreadCount; i++) {
@@ -495,5 +494,7 @@
         });
         return foundEntity;
     };
+
+    window.downloader = downloader;
 
 })();

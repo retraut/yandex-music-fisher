@@ -1,6 +1,6 @@
 /* global yandex, utils */
 
-(()=> {
+(() => {
     'use strict';
 
     let getTrackPageURL = trackId => {
@@ -19,8 +19,7 @@
             ));
         }).catch(error => console.log(error));
     };
-    window.getTrackPageURL = getTrackPageURL;
 
-    getTrackPageURL(4790215);
+    window.getTrackPageURL = getTrackPageURL;
 
 })();

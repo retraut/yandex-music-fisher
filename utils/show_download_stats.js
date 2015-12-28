@@ -1,6 +1,6 @@
 /* global utils */
 
-(()=> {
+(() => {
     'use strict';
 
     const githubURL = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases';
