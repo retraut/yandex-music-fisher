@@ -43,7 +43,11 @@
         "https://music.yandex.ru/*",
         "https://music.yandex.ua/*",
         "https://music.yandex.kz/*",
-        "https://music.yandex.by/*"
+        "https://music.yandex.by/*",
+        "https://radio.yandex.ru/*",
+        "https://radio.yandex.ua/*",
+        "https://radio.yandex.kz/*",
+        "https://radio.yandex.by/*"
       ]
     }
   ],

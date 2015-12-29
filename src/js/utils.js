@@ -120,37 +120,41 @@
     };
 
     utils.getUrlInfo = url => {
-        let info = {};
+        let info = {
+            isMusic: false,
+            isRadio: false
+        };
         let parts = url.replace(/\?.*/, '').split('/');
         //["http:", "", "music.yandex.ru", "users", "furfurmusic", "playlists", "1000"]
-        info.isYandexMusic = (
-            parts[2] === 'music.yandex.ru' ||
-            parts[2] === 'music.yandex.ua' ||
-            parts[2] === 'music.yandex.kz' ||
-            parts[2] === 'music.yandex.by'
-        );
-        if (info.isYandexMusic) {
-            storage.current.domain = parts[2].split('.')[2];
-        } else {
-            return info;
+        let musicMatch = parts[2].match(/^music\.yandex\.(ru|by|kz|ua)$/);
+        if (musicMatch) {
+            info.isMusic = true;
+            storage.current.domain = musicMatch[1];
         }
-        info.isPlaylist = (parts[3] === 'users' && parts[5] === 'playlists' && !!parts[6]);
-        info.isTrack = (parts[3] === 'album' && parts[5] === 'track' && !!parts[6]);
-        info.isAlbum = (parts[3] === 'album' && !!parts[4]);
-        info.isArtist = (parts[3] === 'artist' && !!parts[4]);
-        info.isLabel = (parts[3] === 'label' && !!parts[4]);
-        info.isGenre = (parts[3] === 'genre');
-        if (info.isPlaylist) {
-            info.username = parts[4];
-            info.playlistId = parts[6];
-        } else if (info.isTrack) {
-            info.trackId = parts[6];
-        } else if (info.isAlbum) {
-            info.albumId = parts[4];
-        } else if (info.isArtist) {
-            info.artistId = parts[4];
-        } else if (info.isLabel) {
-            info.labelId = parts[4];
+        let radioMatch = parts[2].match(/^radio\.yandex\.(ru|by|kz|ua)$/);
+        if (radioMatch) {
+            info.isRadio = true;
+            storage.current.domain = radioMatch[1];
+        }
+        if (info.isMusic) {
+            info.isPlaylist = (parts[3] === 'users' && parts[5] === 'playlists' && !!parts[6]);
+            info.isTrack = (parts[3] === 'album' && parts[5] === 'track' && !!parts[6]);
+            info.isAlbum = (parts[3] === 'album' && !!parts[4]);
+            info.isArtist = (parts[3] === 'artist' && !!parts[4]);
+            info.isLabel = (parts[3] === 'label' && !!parts[4]);
+            info.isGenre = (parts[3] === 'genre');
+            if (info.isPlaylist) {
+                info.username = parts[4];
+                info.playlistId = parts[6];
+            } else if (info.isTrack) {
+                info.trackId = parts[6];
+            } else if (info.isAlbum) {
+                info.albumId = parts[4];
+            } else if (info.isArtist) {
+                info.artistId = parts[4];
+            } else if (info.isLabel) {
+                info.labelId = parts[4];
+            }
         }
         return info;
     };
@@ -160,7 +164,7 @@
         let iconPath = 'img/black.png';
         if (page.isPlaylist) {
             iconPath = 'img/green.png';
-        } else if (page.isTrack || page.isGenre) {
+        } else if (page.isTrack || page.isGenre || page.isRadio) {
             iconPath = 'img/blue.png';
         } else if (page.isAlbum) {
             iconPath = 'img/yellow.png';

@@ -336,7 +336,7 @@
                 title += ' (' + album.version + ')';
             }
             albumContent += '<label><input type="checkbox" class="album" value="';
-            albumContent += album.id + '">[' + album.trackCount + '] ' +  artists + ' - ' + title + '</label><br>';
+            albumContent += album.id + '">[' + album.trackCount + '] ' + artists + ' - ' + title + '</label><br>';
         });
 
         $('name').innerHTML = label.label.name;
@@ -487,15 +487,19 @@
                     generateDownloadLabel(label);
                     downloadBtn.setAttribute('data-name', label.label.name);
                 }).catch(onAjaxFail);
-            } else if (page.isGenre) {
-                chrome.tabs.sendMessage(activeTab.id, 'getCurrentTrackUrl', function (response) {
-                    if (!response || !response.url) {
+            } else if (page.isGenre || page.isRadio) {
+                chrome.tabs.sendMessage(activeTab.id, 'getCurrentTrackUrl');
+                chrome.runtime.onMessage.addListener(function (request) {
+                    if (!request || !request.link) {
                         hidePreloader();
                         $('downloadBtn').click();
                         $('addBtn').classList.add('disabled');
                         return;
                     }
-                    let page = bp.utils.getUrlInfo(response.url);
+                    let url = 'https://music.yandex.%domain%%link%'
+                        .replace('%domain%', bp.storage.current.domain)
+                        .replace('%link%', request.link);
+                    let page = bp.utils.getUrlInfo(url);
                     downloadBtn.setAttribute('data-type', 'track');
                     downloadBtn.setAttribute('data-trackId', page.trackId);
                     if (bp.storage.current.singleClickDownload) {
