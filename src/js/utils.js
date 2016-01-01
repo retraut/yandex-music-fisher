@@ -139,7 +139,7 @@
         if (info.isMusic) {
             info.isPlaylist = (parts[3] === 'users' && parts[5] === 'playlists' && !!parts[6]);
             info.isTrack = (parts[3] === 'album' && parts[5] === 'track' && !!parts[6]);
-            info.isAlbum = (parts[3] === 'album' && !!parts[4]);
+            info.isAlbum = (parts[3] === 'album' && !!parts[4] && parts[5] !== 'track');
             info.isArtist = (parts[3] === 'artist' && !!parts[4]);
             info.isLabel = (parts[3] === 'label' && !!parts[4]);
             if (info.isPlaylist) {
