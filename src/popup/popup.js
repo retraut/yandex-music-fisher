@@ -424,16 +424,9 @@
         $('errorContainer').classList.remove('hidden');
     };
 
-    let adaptToSmallDeviceHeight = tabHeight => {
-        if (tabHeight <= 600) {
-            document.getElementsByTagName('body')[0].style.paddingBottom = '75px';
-        }
-    };
-
     chrome.runtime.getBackgroundPage(bp => {
         backgroundPage = bp;
         bp.utils.getActiveTab().then(activeTab => {
-            adaptToSmallDeviceHeight(activeTab.height);
             let page = bp.utils.getUrlInfo(activeTab.url);
             let downloadBtn = $('startDownloadBtn');
             if (page.isPlaylist) {
