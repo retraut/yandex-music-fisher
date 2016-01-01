@@ -142,7 +142,6 @@
             info.isAlbum = (parts[3] === 'album' && !!parts[4]);
             info.isArtist = (parts[3] === 'artist' && !!parts[4]);
             info.isLabel = (parts[3] === 'label' && !!parts[4]);
-            info.isGenre = (parts[3] === 'genre');
             if (info.isPlaylist) {
                 info.username = parts[4];
                 info.playlistId = parts[6];
@@ -164,12 +163,12 @@
         let iconPath = 'img/black.png';
         if (page.isPlaylist) {
             iconPath = 'img/green.png';
-        } else if (page.isTrack || page.isGenre || page.isRadio) {
-            iconPath = 'img/blue.png';
         } else if (page.isAlbum) {
             iconPath = 'img/yellow.png';
         } else if (page.isArtist || page.isLabel) {
             iconPath = 'img/pink.png';
+        } else if (page.isMusic || page.isRadio) {
+            iconPath = 'img/blue.png';
         }
         chrome.browserAction.setIcon({
             tabId: tab.id,

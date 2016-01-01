@@ -480,7 +480,7 @@
                     generateDownloadLabel(label);
                     downloadBtn.setAttribute('data-name', label.label.name);
                 }).catch(onAjaxFail);
-            } else if (page.isGenre || page.isRadio) {
+            } else if (page.isMusic || page.isRadio) {
                 chrome.tabs.sendMessage(activeTab.id, 'getCurrentTrackUrl');
                 chrome.runtime.onMessage.addListener(function (request) {
                     if (!request || !request.link) {
