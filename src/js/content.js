@@ -5,14 +5,14 @@
 
     const IS_RADIO = location.hostname.match(/^radio\.yandex\.(ru|by|kz|ua)$/);
 
-    let injectCode = function (func) {
+    let injectCode = func => {
         let script = document.createElement('script');
         script.textContent = '"use strict";try {(' + func + ')(); } catch(e) {console.log("injected error", e);};';
         (document.head || document.documentElement).appendChild(script);
         script.parentNode.removeChild(script);
     };
 
-    let getCurrentTrackUrl = function () {
+    let getCurrentTrackUrl = () => {
         let link;
         let track = externalAPI.getCurrentTrack();
         if (track && track.link) {
@@ -25,20 +25,18 @@
         }));
     };
 
-    chrome.runtime.onMessage.addListener(function (message) {
+    chrome.runtime.onMessage.addListener(message => {
         // расширение прислало сообщение
         if (message === 'getCurrentTrackUrl') {
             injectCode(getCurrentTrackUrl);
         }
     });
 
-    document.addEventListener('fisher_injected_event', function (e) {
-        // ловим события со страницы и отправляем расширению
-        chrome.runtime.sendMessage(e.detail);
-    });
+    // ловим события со страницы и отправляем расширению
+    document.addEventListener('fisher_injected_event', e => chrome.runtime.sendMessage(e.detail));
 
     if (IS_RADIO) {
-        injectCode(function () { // временный патч
+        injectCode(() => { // временный патч
             var repo = Mu.blocks.di.repo;
             repo.seq = repo.flow;
 
