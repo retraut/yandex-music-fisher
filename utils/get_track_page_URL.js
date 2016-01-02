@@ -4,7 +4,6 @@
     'use strict';
 
     let getTrackPageUrl = trackId => {
-        const urlPattern = 'https://music.yandex.ru/album/%albumId%/track/%trackId%';
         yandex.getTrack(trackId).then(json => {
             let track = json.track;
             let artists = utils.parseArtists(track.artists).artists.join(', ');
@@ -17,10 +16,7 @@
                 console.info(track.error);
                 return;
             }
-            track.albums.forEach(album => console.log(urlPattern
-                .replace('%albumId%', album.id)
-                .replace('%trackId%', trackId)
-            ));
+            track.albums.forEach(album => console.log(`https://music.yandex.ru/album/${album.id}/track/${trackId}`));
         }).catch(error => console.error(error));
     };
 

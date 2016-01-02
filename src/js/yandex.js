@@ -5,10 +5,10 @@
 
     let yandex = {};
 
+    yandex.baseUrl = () => `https://music.yandex.${storage.current.domain}`;
+
     yandex.getTrackUrl = trackId => {
-        let url = 'https://music.yandex.%domain%/api/v2.0/handlers/track/%id%/download'
-            .replace('%domain%', storage.current.domain)
-            .replace('%id%', trackId);
+        let url = `${yandex.baseUrl()}/api/v2.0/handlers/track/${trackId}/download`;
         return utils.ajax(url, 'json').then(json => {
             if (json.codec !== 'mp3') {
                 ga('send', 'event', 'test', json.codec + ' codec', trackId);
@@ -25,8 +25,7 @@
     };
 
     yandex.getTrackOldUrl = storageDir => {
-        let url = 'https://storage.mds.yandex.net/download-info/%storage%/2?format=json'
-            .replace('%storage%', storageDir);
+        let url = `https://storage.mds.yandex.net/download-info/${storageDir}/2?format=json`;
         return utils.ajax(url, 'json').then(json => {
             let salt = 'XGRlBW9FXlekgbPrRHuSiA';
             var md5 = window.md5(salt + json.path.substr(1) + json.s);
@@ -35,39 +34,27 @@
     };
 
     yandex.getTrack = trackId => {
-        let url = 'https://music.yandex.%domain%/handlers/track.jsx?track=%id%'
-            .replace('%domain%', storage.current.domain)
-            .replace('%id%', trackId);
+        let url = `${yandex.baseUrl()}/handlers/track.jsx?track=${trackId}`;
         return utils.ajax(url, 'json');
     };
 
     yandex.getArtist = artistId => {
-        let url = 'https://music.yandex.%domain%/handlers/artist.jsx?artist=%id%&what=albums'
-            .replace('%domain%', storage.current.domain)
-            .replace('%id%', artistId);
+        let url = `${yandex.baseUrl()}/handlers/artist.jsx?artist=${artistId}&what=albums`;
         return utils.ajax(url, 'json');
     };
 
     yandex.getAlbum = albumId => {
-        let url = 'https://music.yandex.%domain%/handlers/album.jsx?album=%id%'
-            .replace('%domain%', storage.current.domain)
-            .replace('%id%', albumId);
+        let url = `${yandex.baseUrl()}/handlers/album.jsx?album=${albumId}`;
         return utils.ajax(url, 'json');
     };
 
     yandex.getPlaylist = (username, playlistId) => {
-        let url = 'https://music.yandex.%domain%/handlers/playlist.jsx?owner=%user%&kinds=%id%'
-            .replace('%domain%', storage.current.domain)
-            .replace('%user%', username)
-            .replace('%id%', playlistId);
-        return utils.ajax(url, 'json')
-            .then(json => json.playlist);
+        let url = `${yandex.baseUrl()}/handlers/playlist.jsx?owner=${username}&kinds=${playlistId}`;
+        return utils.ajax(url, 'json').then(json => json.playlist);
     };
 
     yandex.getLabel = labelId => {
-        let url = 'https://music.yandex.%domain%/handlers/label.jsx?sort=year&id=%id%'
-            .replace('%domain%', storage.current.domain)
-            .replace('%id%', labelId);
+        let url = `${yandex.baseUrl()}/handlers/label.jsx?sort=year&id=${labelId}`;
         return utils.ajax(url, 'json');
     };
 

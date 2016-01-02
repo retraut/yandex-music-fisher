@@ -37,36 +37,36 @@
 
         let name = '';
         if (isAlbum) {
-            name = 'Альбом <strong>' + entity.artists + ' - ' + entity.title + '</strong>';
+            name = `Альбом <strong>${entity.artists} - ${entity.title}</strong>`;
         } else if (isPlaylist) {
-            name = 'Плейлист <strong>' + entity.title + '</strong>';
+            name = `Плейлист <strong>${entity.title}</strong>`;
         }
 
         let status = '';
         let loadedTrackSizeStr = backgroundPage.utils.bytesToStr(loadedTrackSize);
         let totalTrackSizeStr = backgroundPage.utils.bytesToStr(totalTrackSize);
         if (isLoading) {
-            status = '<span class="text-primary">Загрузка [' + loadedTrackSizeStr + ' из ' + totalTrackSizeStr + ']</span>';
+            status = `<span class="text-primary">Загрузка [${loadedTrackSizeStr} из ${totalTrackSizeStr}]</span>`;
         } else if (isInterrupted) {
-            status = '<span class="text-danger">Ошибка [скачано ' + loadedTrackSizeStr + ' из ' + totalTrackSizeStr + ']</span>&nbsp;';
-            status += '<button type="button" class="btn btn-info btn-xs restore-btn" data-id="' + entity.index + '">';
-            status += '<i class="glyphicon glyphicon-repeat restore-btn" data-id="' + entity.index + '"></i></button>';
+            status = `<span class="text-danger">Ошибка [скачано ${loadedTrackSizeStr} из ${totalTrackSizeStr}]</span> `;
+            status += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
+            status += `<i class="glyphicon glyphicon-repeat restore-btn" data-id="${entity.index}"></i></button>`;
         } else if (isFinished) {
-            status = '<span class="text-success">Сохранён [' + totalTrackSizeStr + ']</span>';
+            status = `<span class="text-success">Сохранён [${totalTrackSizeStr}]</span>`;
         } else if (isWaiting) {
-            status = '<span class="text-muted">В очереди [' + totalTrackSizeStr + ']</span>';
+            status = `<span class="text-muted">В очереди [${totalTrackSizeStr}]</span>`;
         }
 
         let loadedSizePercent = Math.floor(loadedTrackSize / totalTrackSize * 100);
         let view = '<div class="panel panel-default">';
         view += '<div class="panel-heading">';
         view += name + '<br>';
-        view += 'Скачано треков ' + loadedTrackCount + ' из ' + totalTrackCount + ' (' + loadedSizePercent + '%)';
+        view += `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
         view += '</div>';
         view += '<div class="panel-body">';
         view += status;
-        view += '&nbsp;<button type="button" class="btn btn-danger btn-xs remove-btn" data-id="' + entity.index + '">';
-        view += '<i class="glyphicon glyphicon-remove remove-btn" data-id="' + entity.index + '"></i></button>';
+        view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
+        view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
         view += '</div>';
         view += '</div>';
         return view;
@@ -82,25 +82,25 @@
         let isInterrupted = entity.status === backgroundPage.downloader.STATUS.INTERRUPTED;
 
         if (isWaiting) {
-            status = '<span class="text-muted">В очереди [' + totalSize + ']</span>';
+            status = `<span class="text-muted">В очереди [${totalSize}]</span>`;
         } else if (isLoading) {
-            status = '<span class="text-primary">Загрузка [' + loadedSize + ' из ' + totalSize + ']</span>';
+            status = `<span class="text-primary">Загрузка [${loadedSize} из ${totalSize}]</span>`;
         } else if (isFinished) {
-            status = '<span class="text-success">Сохранён [' + totalSize + ']</span>';
+            status = `<span class="text-success">Сохранён [${totalSize}]</span>`;
         } else if (isInterrupted) {
-            status = '<span class="text-danger">Ошибка [скачано ' + loadedSize + ' из ' + totalSize + ']</span>&nbsp;';
-            status += '<button type="button" class="btn btn-info btn-xs restore-btn" data-id="' + entity.index + '">';
-            status += '<i class="glyphicon glyphicon-repeat restore-btn" data-id="' + entity.index + '"></i></button>';
+            status = `<span class="text-danger">Ошибка [скачано ${loadedSize} из ${totalSize}]</span> `;
+            status += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
+            status += `<i class="glyphicon glyphicon-repeat restore-btn" data-id="${entity.index}"></i></button>`;
         }
 
         let view = '<div class="panel panel-default">';
         view += '<div class="panel-heading">';
-        view += 'Трек <strong>' + entity.artists + ' - ' + entity.title + '</strong>';
+        view += `Трек <strong>${entity.artists} - ${entity.title}</strong>`;
         view += '</div>';
         view += '<div class="panel-body">';
         view += status;
-        view += '&nbsp;<button type="button" class="btn btn-danger btn-xs remove-btn" data-id="' + entity.index + '">';
-        view += '<i class="glyphicon glyphicon-remove remove-btn" data-id="' + entity.index + '"></i></button>';
+        view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
+        view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
         view += '</div>';
         view += '</div>';
         return view;
@@ -256,40 +256,38 @@
 
         let sortedAlbums = artist.albums.sort((a, b) => b.year - a.year);
         if (sortedAlbums.length) {
-            albumContent += '<label><input type="checkbox" id="albumCheckbox" checked><b>Альбомы (';
-            albumContent += sortedAlbums.length + ')</b></label><br>';
+            let name = `Альбомы (${sortedAlbums.length})`;
+            albumContent += `<label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label><br>`;
         }
         let year = 0;
         sortedAlbums.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                albumContent += '<br><label class="label-year">' + year + '</label><br>';
+                albumContent += `<br><label class="label-year">${year}</label><br>`;
             }
-            let title = '[' + album.trackCount + '] ' + album.title;
+            let title = `[${album.trackCount}] ${album.title}`;
             if (album.version) {
-                title += ' (' + album.version + ')';
+                title += ` (${album.version})`;
             }
-            albumContent += '<label><input type="checkbox" class="album" checked value="';
-            albumContent += album.id + '">' + title + '</label><br>';
+            albumContent += `<label><input type="checkbox" class="album" checked value="${album.id}">${title}</label><br>`;
         });
 
         let sortedCompilations = artist.alsoAlbums.sort((a, b) => b.year - a.year);
         if (sortedCompilations.length) {
-            compilationContent += '<br><label><input type="checkbox" id="compilationCheckbox"><b>Сборники (';
-            compilationContent += sortedCompilations.length + ')</b></label><br>';
+            let name = `Сборники (${sortedCompilations.length})`;
+            compilationContent += `<br><label><input type="checkbox" id="compilationCheckbox"><b>${name}</b></label><br>`;
         }
         year = 0;
         sortedCompilations.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                compilationContent += '<br><label class="label-year">' + year + '</label><br>';
+                compilationContent += `<br><label class="label-year">${year}</label><br>`;
             }
-            let title = '[' + album.trackCount + '] ' + album.title;
+            let title = `[${album.trackCount}] ${album.title}`;
             if (album.version) {
-                title += ' (' + album.version + ')';
+                title += ` (${album.version})`;
             }
-            compilationContent += '<label><input type="checkbox" class="compilation" value="';
-            compilationContent += album.id + '">' + title + '</label><br>';
+            compilationContent += `<label><input type="checkbox" class="compilation" value="${album.id}">${title}</label><br>`;
         });
         $('name').innerHTML = artist.artist.name;
         $('info').innerHTML = 'Дискография';
@@ -321,22 +319,22 @@
         let albumContent = '';
         let sortedAlbums = label.albums.sort((a, b) => b.year - a.year);
         if (sortedAlbums.length) {
-            albumContent += '<label><input type="checkbox" id="albumCheckbox"><b>Альбомы (';
-            albumContent += sortedAlbums.length + ')</b></label><br>';
+            let name = `Альбомы (${sortedAlbums.length})`;
+            albumContent += `<label><input type="checkbox" id="albumCheckbox"><b>${name}</b></label><br>`;
         }
         let year = 0;
         sortedAlbums.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                albumContent += '<br><label class="label-year">' + year + '</label><br>';
+                albumContent += `<br><label class="label-year">${year}</label><br>`;
             }
             let artists = backgroundPage.utils.parseArtists(album.artists).artists.join(', ');
             let title = album.title;
             if (album.version) {
                 title += ' (' + album.version + ')';
             }
-            albumContent += '<label><input type="checkbox" class="album" value="';
-            albumContent += album.id + '">[' + album.trackCount + '] ' + artists + ' - ' + title + '</label><br>';
+            let name = `[${album.trackCount}] ${artists} - ${title}`;
+            albumContent += `<label><input type="checkbox" class="album" value="${album.id}">${name}</label><br>`;
         });
 
         $('name').innerHTML = label.label.name;
@@ -359,13 +357,13 @@
         let artists = backgroundPage.utils.parseArtists(track.artists).artists.join(', ');
         let size = backgroundPage.utils.bytesToStr(track.fileSize);
         let duration = backgroundPage.utils.durationToStr(track.durationMs);
-        $('name').innerHTML = artists + ' - ' + track.title;
-        $('info').innerHTML = 'Трек / ' + size + ' / ' + duration;
+        $('name').innerHTML = `${artists} - ${track.title}`;
+        $('info').innerHTML = `Трек / ${size} / ${duration}`;
     };
 
     let generateDownloadAlbum = album => {
         let artists = backgroundPage.utils.parseArtists(album.artists).artists.join(', ');
-        $('name').innerHTML = artists + ' - ' + album.title;
+        $('name').innerHTML = `${artists} - ${album.title}`;
         if (!album.trackCount) {
             $('info').innerHTML = 'Пустой альбом';
             $('startDownloadBtn').style.display = 'none';
@@ -388,7 +386,7 @@
         });
         size = backgroundPage.utils.bytesToStr(size);
         duration = backgroundPage.utils.durationToStr(duration);
-        $('info').innerHTML = 'Альбом (' + album.trackCount + ') / ' + size + ' / ' + duration;
+        $('info').innerHTML = `Альбом (${album.trackCount}) / ${size} / ${duration}`;
     };
 
     let generateDownloadPlaylist = playlist => {
@@ -413,7 +411,7 @@
         });
         size = backgroundPage.utils.bytesToStr(size);
         duration = backgroundPage.utils.durationToStr(duration);
-        $('info').innerHTML = 'Плейлист (' + playlist.trackCount + ') / ' + size + ' / ' + duration;
+        $('info').innerHTML = `Плейлист (${playlist.trackCount}) / ${size} / ${duration}`;
     };
 
     let onAjaxFail = error => {
@@ -489,10 +487,7 @@
                         $('addBtn').classList.add('disabled');
                         return;
                     }
-                    let url = 'https://music.yandex.%domain%%link%'
-                        .replace('%domain%', bp.storage.current.domain)
-                        .replace('%link%', request.link);
-                    let page = bp.utils.getUrlInfo(url);
+                    let page = bp.utils.getUrlInfo(bp.yandex.baseUrl() + request.link);
                     downloadBtn.setAttribute('data-type', 'track');
                     downloadBtn.setAttribute('data-trackId', page.trackId);
                     if (bp.storage.current.singleClickDownload) {

@@ -34,8 +34,7 @@
             } else {
                 $('albumCoverSize').setAttribute('disabled', 'disabled');
             }
-        }
-        else if (checkbox === 'backgroundDownload') {
+        } else if (checkbox === 'backgroundDownload') {
             let permissions = {
                 permissions: ['background']
             };
