@@ -5,16 +5,16 @@
 
     const IS_RADIO = location.hostname.match(/^radio\.yandex\.(ru|by|kz|ua)$/);
 
-    let injectCode = func => {
-        let script = document.createElement('script');
+    const injectCode = func => {
+        const script = document.createElement('script');
         script.textContent = '"use strict";try {(' + func + ')(); } catch(e) {console.log("injected error", e);};';
         (document.head || document.documentElement).appendChild(script);
         script.parentNode.removeChild(script);
     };
 
-    let getCurrentTrackUrl = () => {
+    const getCurrentTrackUrl = () => {
         let link;
-        let track = externalAPI.getCurrentTrack();
+        const track = externalAPI.getCurrentTrack();
         if (track && track.link) {
             link = track.link;
         }

@@ -24,8 +24,8 @@
     ga('send', 'event', 'load', chrome.runtime.getManifest().version);
 
     window.onerror = (message, file, line, col, error) => {
-        let relativePattern = /chrome-extension:\/\/[^\/]+/g;
-        let report = chrome.runtime.getManifest().version + ': ' + error.stack.replace(relativePattern, '').replace(/\n/g, '');
+        const relativePattern = /chrome-extension:\/\/[^\/]+/g;
+        const report = chrome.runtime.getManifest().version + ': ' + error.stack.replace(relativePattern, '').replace(/\n/g, '');
         utils.getActiveTab()
             .then(activeTab => ga('send', 'event', 'onerror', report, activeTab.url))
             .catch(() => ga('send', 'event', 'onerror', report));
@@ -38,7 +38,7 @@
 
     chrome.runtime.onInstalled.addListener(details => { // установка или обновление расширения
         storage.init();
-        let version = chrome.runtime.getManifest().version;
+        const version = chrome.runtime.getManifest().version;
         if (details.reason === 'install') {
             ga('send', 'event', 'install', version);
         } else if (details.reason === 'update' && details.previousVersion !== version) {
@@ -68,7 +68,7 @@
             return;
         }
         utils.getDownload(delta.id).then(download => {
-            let entity = downloader.getEntityByBrowserDownloadId(delta.id);
+            const entity = downloader.getEntityByBrowserDownloadId(delta.id);
             if (entity) {
                 // не попадут: архив с обновлением,
                 // трек и обложка при удалённой сущности в процессе сохранения BLOB (теоретически, но маловероятно)
@@ -85,7 +85,7 @@
                         });
                     } else {
                         entity.status = downloader.STATUS.INTERRUPTED;
-                        let error = {
+                        const error = {
                             message: download.error,
                             details: ''
                         };

@@ -3,7 +3,7 @@
 (() => {
     'use strict';
 
-    let storage = {
+    const storage = {
         defaults: {
             downloadThreadCount: 4,
             shouldDownloadCover: true,
@@ -20,7 +20,7 @@
     };
 
     storage.init = () => {
-        let keys = Object.keys(storage.defaults);
+        const keys = Object.keys(storage.defaults);
         chrome.storage.local.get(keys, items => {
             for (let i = 0; i < keys.length; i++) {
                 if (items[keys[i]] === undefined) {
@@ -39,15 +39,15 @@
     });
 
     storage.reset = param => {
-        let defaultValue = storage.defaults[param];
-        let data = {};
+        const defaultValue = storage.defaults[param];
+        const data = {};
         data[param] = defaultValue;
         chrome.storage.local.set(data, storage.load);
     };
 
     storage.resetAll = () => new Promise(resolve => {
-        let data = {};
-        for (let param in storage.defaults) {
+        const data = {};
+        for (const param in storage.defaults) {
             if (storage.defaults.hasOwnProperty(param)) {
                 data[param] = storage.defaults[param];
             }

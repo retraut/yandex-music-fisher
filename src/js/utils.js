@@ -3,10 +3,10 @@
 (() => {
     'use strict';
 
-    let utils = {};
+    const utils = {};
 
     utils.ajax = (url, type, onProgress) => new Promise((resolve, reject) => {
-        let xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.responseType = type;
         xhr.onload = () => {
@@ -40,9 +40,9 @@
     utils.delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     utils.bytesToStr = bytes => {
-        let KiB = 1024;
-        let MiB = 1024 * KiB;
-        let GiB = 1024 * MiB;
+        const KiB = 1024;
+        const MiB = 1024 * KiB;
+        const GiB = 1024 * MiB;
         if (bytes < GiB) {
             return (bytes / MiB).toFixed(2) + ' МиБ';
         } else {
@@ -51,9 +51,9 @@
     };
 
     utils.addExtraZeros = (val, max) => {
-        let valLength = val.toString().length;
-        let maxLength = max.toString().length;
-        let diff = maxLength - valLength;
+        const valLength = val.toString().length;
+        const maxLength = max.toString().length;
+        const diff = maxLength - valLength;
         let zeros = '';
         for (let i = 0; i < diff; i++) {
             zeros += '0';
@@ -65,13 +65,13 @@
         let seconds = Math.floor(duration / 1000);
         let minutes = Math.floor(seconds / 60);
         seconds -= minutes * 60;
-        let hours = Math.floor(minutes / 60);
+        const hours = Math.floor(minutes / 60);
         minutes -= hours * 60;
         return hours + ':' + utils.addExtraZeros(minutes, 10) + ':' + utils.addExtraZeros(seconds, 10);
     };
 
     utils.clearPath = (path, isDir) => {
-        let unsafeChars = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200b-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+        const unsafeChars = /[\u0000-\u001f\u007f-\u009f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200b-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
         path = path.replace(/^\./, '_'); // первый символ - точка (https://music.yandex.ru/album/2289231/track/20208868)
         path = path.replace(/"/g, "''"); // двойные кавычки в одинарные
         path = path.replace(/\t/g, ' '); // табы в пробелы (https://music.yandex.ru/album/718010/track/6570232)
@@ -96,7 +96,7 @@
         const VA = 'Various Artists'; // пример https://music.yandex.ru/album/718010/track/6570232
         const UA = 'Unknown Artist'; // пример https://music.yandex.ru/album/533785/track/4790215
         let artists = [];
-        let composers = [];
+        const composers = [];
         allArtists.forEach(artist => {
             if (artist.composer) { // пример https://music.yandex.ru/album/717747/track/6672611
                 composers.push(artist.name);
@@ -120,18 +120,18 @@
     };
 
     utils.getUrlInfo = url => {
-        let info = {
+        const info = {
             isMusic: false,
             isRadio: false
         };
-        let parts = url.replace(/\?.*/, '').split('/');
+        const parts = url.replace(/\?.*/, '').split('/');
         //["http:", "", "music.yandex.ru", "users", "furfurmusic", "playlists", "1000"]
-        let musicMatch = parts[2].match(/^music\.yandex\.(ru|by|kz|ua)$/);
+        const musicMatch = parts[2].match(/^music\.yandex\.(ru|by|kz|ua)$/);
         if (musicMatch) {
             info.isMusic = true;
             storage.current.domain = musicMatch[1];
         }
-        let radioMatch = parts[2].match(/^radio\.yandex\.(ru|by|kz|ua)$/);
+        const radioMatch = parts[2].match(/^radio\.yandex\.(ru|by|kz|ua)$/);
         if (radioMatch) {
             info.isRadio = true;
             storage.current.domain = radioMatch[1];
@@ -159,7 +159,7 @@
     };
 
     utils.updateTabIcon = tab => {
-        let page = utils.getUrlInfo(tab.url);
+        const page = utils.getUrlInfo(tab.url);
         let iconPath = 'img/black.png';
         if (page.isPlaylist) {
             iconPath = 'img/green.png';
@@ -200,7 +200,7 @@
     });
 
     utils.updateBadge = () => {
-        let count = downloader.getDownloadCount();
+        const count = downloader.getDownloadCount();
         let countStr = '';
         if (count) {
             countStr = count.toString();
@@ -211,19 +211,19 @@
     };
 
     utils.checkUpdate = () => new Promise(resolve => {
-        let releaseInfoUrl = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases/latest';
+        const releaseInfoUrl = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases/latest';
         utils.ajax(releaseInfoUrl, 'json').then(releaseInfo => {
-            let latestVersion = releaseInfo.tag_name.replace('v', '').split('.');
-            let currentVersion = chrome.runtime.getManifest().version.split('.');
+            const latestVersion = releaseInfo.tag_name.replace('v', '').split('.');
+            const currentVersion = chrome.runtime.getManifest().version.split('.');
 
-            let isMajorUpdate = (
+            const isMajorUpdate = (
                 latestVersion[0] > currentVersion[0]
             );
-            let isMinorUpdate = (
+            const isMinorUpdate = (
                 latestVersion[1] > currentVersion[1] &&
                 latestVersion[0] === currentVersion[0]
             );
-            let isPatchUpdate = (
+            const isPatchUpdate = (
                 latestVersion[2] > currentVersion[2] &&
                 latestVersion[1] === currentVersion[1] &&
                 latestVersion[0] === currentVersion[0]

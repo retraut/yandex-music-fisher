@@ -3,10 +3,10 @@
 (() => {
     'use strict';
 
-    let getTrackPageUrl = trackId => {
+    const getTrackPageUrl = trackId => {
         yandex.getTrack(trackId).then(json => {
-            let track = json.track;
-            let artists = utils.parseArtists(track.artists).artists.join(', ');
+            const track = json.track;
+            const artists = utils.parseArtists(track.artists).artists.join(', ');
             let title = track.title;
             if (track.version) {
                 title += ' (' + track.version + ')';
@@ -16,7 +16,7 @@
                 console.info(track.error);
                 return;
             }
-            track.albums.forEach(album => console.log(`https://music.yandex.ru/album/${album.id}/track/${trackId}`));
+            track.albums.forEach(album => console.log(`${yandex.baseUrl()}/album/${album.id}/track/${trackId}`));
         }).catch(error => console.error(error));
     };
 

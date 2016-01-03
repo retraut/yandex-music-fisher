@@ -3,9 +3,9 @@
 (() => {
     'use strict';
 
-    let $ = document.getElementById.bind(document);
+    const $ = document.getElementById.bind(document);
     let backgroundPage;
-    let checkboxes = [
+    const checkboxes = [
         'shouldDownloadCover',
         'enumerateAlbums',
         'enumeratePlaylists',
@@ -14,20 +14,20 @@
         'backgroundDownload',
         'downloadHighestBitrate'
     ];
-    let selects = [
+    const selects = [
         'downloadThreadCount',
         'albumCoverSize',
         'albumCoverSizeId3'
     ];
 
-    let saveSetting = (setting, value) => {
-        let options = {};
+    const saveSetting = (setting, value) => {
+        const options = {};
         options[setting] = value;
         chrome.storage.local.set(options, backgroundPage.storage.load);
     };
 
-    let afterCheckboxChanged = checkbox => {
-        let checked = $(checkbox).checked;
+    const afterCheckboxChanged = checkbox => {
+        const checked = $(checkbox).checked;
         if (checkbox === 'shouldDownloadCover') {
             if (checked) {
                 $('albumCoverSize').removeAttribute('disabled');
@@ -35,7 +35,7 @@
                 $('albumCoverSize').setAttribute('disabled', 'disabled');
             }
         } else if (checkbox === 'backgroundDownload') {
-            let permissions = {
+            const permissions = {
                 permissions: ['background']
             };
             chrome.permissions.contains(permissions, contains => {
@@ -51,12 +51,12 @@
 
     checkboxes.forEach(checkbox => {
         $(checkbox).addEventListener('click', () => {
-            let checked = $(checkbox).checked;
+            const checked = $(checkbox).checked;
             saveSetting(checkbox, checked);
             afterCheckboxChanged(checkbox);
 
             if (checkbox === 'backgroundDownload') {
-                let permissions = {
+                const permissions = {
                     permissions: ['background']
                 };
                 if (checked) {

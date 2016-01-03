@@ -3,7 +3,7 @@
 (() => {
     'use strict';
 
-    let downloader = {
+    const downloader = {
         TYPE: Object.freeze({
             TRACK: 'track',
             ALBUM: 'album',
@@ -35,7 +35,7 @@
         if (downloader.activeThreadCount >= storage.current.downloadThreadCount) {
             return; // достигнуто максимальное количество потоков загрузки
         }
-        let entity = downloader.getWaitingEntity();
+        const entity = downloader.getWaitingEntity();
         if (!entity) { // в очереди нет загрузок
             return;
         }
@@ -46,7 +46,7 @@
         let trackUrl;
         let chain = Promise.resolve();
 
-        let onInterruptEntity = error => {
+        const onInterruptEntity = error => {
             entity.attemptCount++;
             entity.loadedBytes = 0;
             if (entity.attemptCount < 3) {
@@ -62,13 +62,13 @@
             downloader.download();
         };
 
-        let onProgress = event => {
+        const onProgress = event => {
             entity.loadedBytes = event.loaded;
         };
 
-        let onChromeDownloadStart = downloadId => {
+        const onChromeDownloadStart = downloadId => {
             if (chrome.runtime.lastError) {
-                let error = {
+                const error = {
                     message: chrome.runtime.lastError.message,
                     details: ''
                 };
@@ -84,12 +84,12 @@
             }
         };
 
-        let saveTrack = trackArrayBuffer => {
+        const saveTrack = trackArrayBuffer => {
             if (!downloader.downloads[entity.index]) { // загрузку отменили
                 return;
             }
-            let writer = new ID3Writer(trackArrayBuffer);
-            let artists = utils.parseArtists(entity.track.artists);
+            const writer = new ID3Writer(trackArrayBuffer);
+            const artists = utils.parseArtists(entity.track.artists);
             if (entity.title) {
                 writer.setFrame('TIT2', entity.title);
             }
@@ -114,11 +114,11 @@
             if (entity.albumPosition && entity.albumCount > 1) {
                 writer.setFrame('TPOS', entity.albumPosition);
             }
-            let albumArtist = utils.parseArtists(trackAlbum.artists).artists.join(', ');
+            const albumArtist = utils.parseArtists(trackAlbum.artists).artists.join(', ');
             if (albumArtist) {
                 writer.setFrame('TPE2', albumArtist);
             }
-            let genre = trackAlbum.genre;
+            const genre = trackAlbum.genre;
             if (genre) {
                 writer.setFrame('TCON', [genre[0].toUpperCase() + genre.substr(1)]);
             }
@@ -138,7 +138,7 @@
             }, onChromeDownloadStart);
         };
 
-        let onInterruptEntityExcept404 = error => {
+        const onInterruptEntityExcept404 = error => {
             if (error.message === 'Not found (404)') { // обложки с выбранном размером нет - игнорируем её
                 if (entity.type === downloader.TYPE.TRACK) { // продолжаем загрузку трека без обложки
                     chain = chain.then(() => utils.ajax(trackUrl, 'arraybuffer', onProgress))
@@ -154,7 +154,7 @@
             trackAlbum = entity.track.albums[0];
             if (trackAlbum.coverUri) {
                 // пример альбома без обложки: https://music.yandex.ru/album/2236232/track/23652415
-                let coverUrl = 'https://' + trackAlbum.coverUri.replace('%%', storage.current.albumCoverSizeId3);
+                const coverUrl = 'https://' + trackAlbum.coverUri.replace('%%', storage.current.albumCoverSizeId3);
                 chain = chain.then(() => utils.ajax(coverUrl, 'arraybuffer'))
                     .catch(onInterruptEntityExcept404)
                     .then(arrayBuffer => {
@@ -177,8 +177,8 @@
                 if (!downloader.downloads[entity.index]) { // загрузку отменили
                     return;
                 }
-                let blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
-                let localUrl = window.URL.createObjectURL(blob);
+                const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
+                const localUrl = window.URL.createObjectURL(blob);
                 chrome.downloads.download({
                     url: localUrl,
                     filename: entity.filename,
@@ -192,7 +192,7 @@
     downloader.downloadTrack = trackId => {
         ga('send', 'event', 'track', trackId);
         yandex.getTrack(trackId).then(json => {
-            let track = json.track;
+            const track = json.track;
             if (track.error) {
                 utils.logError({
                     message: 'Ошибка трека: ' + track.error,
@@ -201,7 +201,7 @@
                 return;
             }
 
-            let trackEntity = {
+            const trackEntity = {
                 type: downloader.TYPE.TRACK,
                 status: downloader.STATUS.WAITING,
                 index: downloader.downloads.length,
@@ -220,8 +220,8 @@
                 trackEntity.lyrics = json.lyric[0].fullLyrics;
             }
 
-            let shortArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
-            let shortTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
+            const shortArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
+            const shortTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
             trackEntity.savePath = utils.clearPath(shortArtists + ' - ' + shortTitle + '.mp3', false);
 
             downloader.downloads.push(trackEntity);
@@ -235,7 +235,7 @@
             if (!album.trackCount) {
                 return;
             }
-            let albumEntity = {
+            const albumEntity = {
                 type: downloader.TYPE.ALBUM,
                 index: downloader.downloads.length,
                 duration: 0,
@@ -251,11 +251,11 @@
             }
             let saveDir = '';
             if (artistOrLabelName) {
-                let shortName = artistOrLabelName.substr(0, downloader.PATH_LIMIT);
+                const shortName = artistOrLabelName.substr(0, downloader.PATH_LIMIT);
                 saveDir += utils.clearPath(shortName, true) + '/';
             }
-            let shortAlbumArtists = albumEntity.artists.substr(0, downloader.PATH_LIMIT);
-            let shortAlbumTitle = albumEntity.title.substr(0, downloader.PATH_LIMIT);
+            const shortAlbumArtists = albumEntity.artists.substr(0, downloader.PATH_LIMIT);
+            const shortAlbumTitle = albumEntity.title.substr(0, downloader.PATH_LIMIT);
             if (album.year) {
                 saveDir += utils.clearPath(album.year + ' - ' + shortAlbumArtists + ' - ' + shortAlbumTitle, true);
             } else {
@@ -275,7 +275,7 @@
             }
 
             album.volumes.forEach((volume, i) => {
-                let trackNameCounter = {}; // пример: https://music.yandex.ru/album/512639
+                const trackNameCounter = {}; // пример: https://music.yandex.ru/album/512639
                 volume.forEach((track, j) => {
                     if (track.error) {
                         utils.logError({
@@ -287,9 +287,9 @@
 
                     albumEntity.size += track.fileSize;
                     albumEntity.duration += track.durationMs;
-                    let trackPosition = j + 1;
-                    let albumPosition = i + 1;
-                    let trackEntity = {
+                    const trackPosition = j + 1;
+                    const albumPosition = i + 1;
+                    const trackEntity = {
                         type: downloader.TYPE.TRACK,
                         index: albumEntity.index,
                         status: downloader.STATUS.WAITING,
@@ -347,7 +347,7 @@
             if (!playlist.trackCount) {
                 return;
             }
-            let playlistEntity = {
+            const playlistEntity = {
                 type: downloader.TYPE.PLAYLIST,
                 index: downloader.downloads.length,
                 duration: 0,
@@ -355,9 +355,9 @@
                 title: playlist.title,
                 tracks: []
             };
-            let shortPlaylistTitle = playlist.title.substr(0, downloader.PATH_LIMIT);
-            let saveDir = utils.clearPath(shortPlaylistTitle, true);
-            let trackNameCounter = {}; // пример https://music.yandex.ru/users/dimzon541/playlists/1002
+            const shortPlaylistTitle = playlist.title.substr(0, downloader.PATH_LIMIT);
+            const saveDir = utils.clearPath(shortPlaylistTitle, true);
+            const trackNameCounter = {}; // пример https://music.yandex.ru/users/dimzon541/playlists/1002
 
             playlist.tracks.forEach((track, i) => {
                 if (track.error) {
@@ -369,7 +369,7 @@
                 }
                 playlistEntity.size += track.fileSize;
                 playlistEntity.duration += track.durationMs;
-                let trackEntity = {
+                const trackEntity = {
                     type: downloader.TYPE.TRACK,
                     index: playlistEntity.index,
                     status: downloader.STATUS.WAITING,
@@ -383,8 +383,8 @@
                 if (track.version) {
                     trackEntity.title += ' (' + track.version + ')';
                 }
-                let shortTrackArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
-                let shortTrackTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
+                const shortTrackArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
+                const shortTrackTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
                 let name = shortTrackArtists + ' - ' + shortTrackTitle;
 
                 let savePath = saveDir + '/';
@@ -417,10 +417,10 @@
     downloader.getWaitingEntity = () => {
         let foundEntity;
         downloader.downloads.some(entity => {
-            let isAlbum = entity.type === downloader.TYPE.ALBUM;
-            let isCover = isAlbum && entity.cover;
-            let isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
-            let isTrack = entity.type === downloader.TYPE.TRACK;
+            const isAlbum = entity.type === downloader.TYPE.ALBUM;
+            const isCover = isAlbum && entity.cover;
+            const isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
+            const isTrack = entity.type === downloader.TYPE.TRACK;
 
             if (isCover && entity.cover.status === downloader.STATUS.WAITING) {
                 foundEntity = entity.cover;
@@ -445,10 +445,10 @@
     downloader.getDownloadCount = () => {
         let count = 0;
         downloader.downloads.forEach(entity => {
-            let isAlbum = entity.type === downloader.TYPE.ALBUM;
-            let isCover = isAlbum && entity.cover;
-            let isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
-            let isTrack = entity.type === downloader.TYPE.TRACK;
+            const isAlbum = entity.type === downloader.TYPE.ALBUM;
+            const isCover = isAlbum && entity.cover;
+            const isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
+            const isTrack = entity.type === downloader.TYPE.TRACK;
 
             if (isCover && entity.cover.status !== downloader.STATUS.FINISHED) {
                 count++;
@@ -469,17 +469,17 @@
     downloader.getEntityByBrowserDownloadId = browserDownloadId => {
         let foundEntity;
         downloader.downloads.some(entity => {
-            let isAlbum = entity.type === downloader.TYPE.ALBUM;
-            let isCover = isAlbum && entity.cover;
-            let isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
-            let isTrack = entity.type === downloader.TYPE.TRACK;
+            const isAlbum = entity.type === downloader.TYPE.ALBUM;
+            const isCover = isAlbum && entity.cover;
+            const isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
+            const isTrack = entity.type === downloader.TYPE.TRACK;
 
             if (isCover && entity.cover.browserDownloadId === browserDownloadId) {
                 foundEntity = entity.cover;
                 return true;
             } else if (isAlbum || isPlaylist) {
                 for (let j = 0; j < entity.tracks.length; j++) {
-                    let track = entity.tracks[j];
+                    const track = entity.tracks[j];
                     if (track.browserDownloadId === browserDownloadId) {
                         foundEntity = track;
                         return true;
