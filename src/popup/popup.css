@@ -61,7 +61,7 @@ input[type=checkbox] {
     font-size: 12px;
 }
 
-#startDownloadBtn {
+#startDownloadBtn, #downloadTop10Tracks {
     display: block;
     margin: 0 auto;
 }

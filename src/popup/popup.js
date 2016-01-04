@@ -251,6 +251,15 @@
     };
 
     const generateDownloadArtist = artist => {
+        if (artist.tracks.length) {
+            $('downloadTop10Tracks').classList.remove('hidden');
+            $('downloadTop10Tracks').addEventListener('click', () => {
+                artist.tracks.forEach(track => {
+                    backgroundPage.downloader.downloadTrack(track.id);
+                });
+                $('downloadBtn').click();
+            });
+        }
         let albumContent = '';
         let compilationContent = '';
 
