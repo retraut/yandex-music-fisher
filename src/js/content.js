@@ -1,4 +1,4 @@
-/* global chrome, externalAPI, Mu */
+/* global chrome, externalAPI */
 
 (() => {
     'use strict';
