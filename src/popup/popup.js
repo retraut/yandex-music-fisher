@@ -490,7 +490,7 @@
             } else if (page.isMusic || page.isRadio) {
                 chrome.tabs.sendMessage(activeTab.id, 'getCurrentTrackUrl');
                 chrome.runtime.onMessage.addListener(function (request) {
-                    if (!request || !request.link) {
+                    if (!request || request.action !== 'getCurrentTrackUrl' || !request.link) {
                         hidePreloader();
                         $('downloadBtn').click();
                         $('addBtn').classList.add('disabled');

@@ -1,4 +1,4 @@
-/* global chrome, storage, utils, downloader, ga */
+/* global chrome, storage, utils, downloader, ga, yandex */
 
 (() => {
     'use strict';
@@ -59,6 +59,23 @@
             }
             utils.updateTabIcon(tab);
         });
+    });
+
+    chrome.runtime.onMessage.addListener(function (request) {
+        if (!request || request.action !== 'downloadCurrentTrack' || !request.link) {
+            return;
+        }
+        const page = utils.getUrlInfo(yandex.baseUrl() + request.link);
+        downloader.downloadTrack(page.trackId);
+    });
+
+    chrome.commands.onCommand.addListener(command => {
+        if (command === 'download_playing_track') {
+            chrome.tabs.query({
+                url: chrome.runtime.getManifest().content_scripts[0].matches,
+                audible: true
+            }, tabs => tabs.forEach(tab => chrome.tabs.sendMessage(tab.id, 'downloadCurrentTrack')));
+        }
     });
 
     chrome.downloads.onChanged.addListener(delta => {

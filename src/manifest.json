@@ -20,6 +20,12 @@
   "optional_permissions": [
     "background"
   ],
+  "commands": {
+    "download_playing_track": {
+      "description": "Скачать играющий трек",
+      "global": true
+    }
+  },
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "minimum_chrome_version": "45.0",
   "background": {
