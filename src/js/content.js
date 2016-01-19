@@ -2,10 +2,11 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const injectCode = (func, action) => {
         const script = document.createElement('script');
-        script.textContent = `'use strict';try{(${func})('${action}');}catch(e){console.log('Fisher injected error',e);};`;
+        script.textContent = `'use strict';'use strong';try{(${func})('${action}');}catch(e){console.log('Fisher injected error',e);};`;
         document.head.appendChild(script);
         script.parentNode.removeChild(script);
     };
@@ -13,7 +14,7 @@
     const dispatchCurrentTrackUrl = action => {
         let link;
         const track = externalAPI.getCurrentTrack();
-        if (track && track.link) {
+        if (track && 'link' in track) {
             link = track.link;
         }
         document.dispatchEvent(new CustomEvent('fisher_injected_event', {

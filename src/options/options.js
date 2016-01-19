@@ -2,6 +2,7 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const $ = document.getElementById.bind(document);
     let backgroundPage;
@@ -39,7 +40,7 @@
                 permissions: ['background']
             };
             chrome.permissions.contains(permissions, contains => {
-                if (chrome.runtime.lastError) { // opera
+                if ('lastError' in chrome.runtime) { // opera
                     $('backgroundDownload').parentNode.parentNode.parentNode.style.display = 'none';
                 }
                 if (contains && !checked) { // btnReset

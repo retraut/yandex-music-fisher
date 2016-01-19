@@ -2,21 +2,9 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     let distributionUrl;
-
-    (function (i, s, o, g, r, a, m) {
-        i.GoogleAnalyticsObject = r;
-        i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments);
-            };
-        i[r].l = 1 * new Date();
-        a = s.createElement(o);
-        m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-65530110-1', 'auto');
     ga('set', 'checkProtocolTask', null); // разрешает протокол "chrome-extension"
@@ -47,14 +35,14 @@
     });
 
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-        if (changeInfo.status === 'loading') { // переход по новому URL
+        if ('status' in changeInfo && changeInfo.status === 'loading') { // переход по новому URL
             utils.updateTabIcon(tab);
         }
     });
 
     chrome.tabs.onActivated.addListener(activeInfo => {
         chrome.tabs.get(activeInfo.tabId, tab => { // переключение вкладки
-            if (chrome.runtime.lastError) { // консоль
+            if ('lastError' in chrome.runtime) { // консоль
                 return;
             }
             utils.updateTabIcon(tab);
@@ -62,7 +50,7 @@
     });
 
     chrome.runtime.onMessage.addListener(function (request) {
-        if (!request || request.action !== 'downloadCurrentTrack' || !request.link) {
+        if (!request || request.action !== 'downloadCurrentTrack' || !('link' in request)) {
             return;
         }
         const page = utils.getUrlInfo(yandex.baseUrl() + request.link);
@@ -79,7 +67,7 @@
     });
 
     chrome.downloads.onChanged.addListener(delta => {
-        if (!delta.state) { // состояние не изменилось (начало загрузки)
+        if (!('state' in delta)) { // состояние не изменилось (начало загрузки)
             utils.getDownload(delta.id).then(() => chrome.downloads.setShelfEnabled(true));
             // не нашёл способа перехватывать ошибки, когда другое расширение отключает анимацию загрузок
             return;
@@ -165,6 +153,6 @@
             }],
             isClickable: false
         });
-    }).catch(err => console.info(err));
+    }).catch(err => console.log(err));
 
 })();

@@ -2,6 +2,7 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const downloader = {
         TYPE: Object.freeze({
@@ -17,7 +18,8 @@
             INTERRUPTED: 'interrupted'
         }),
         PATH_LIMIT: 50,
-        downloads: [],
+        downloads: new Map(),
+        downloadsCounter: 0,
         activeThreadCount: 0
     };
 
@@ -67,7 +69,7 @@
         };
 
         const onChromeDownloadStart = downloadId => {
-            if (chrome.runtime.lastError) {
+            if ('lastError' in chrome.runtime) {
                 const error = {
                     message: chrome.runtime.lastError.message,
                     details: ''
@@ -85,33 +87,33 @@
         };
 
         const saveTrack = trackArrayBuffer => {
-            if (!downloader.downloads[entity.index]) { // загрузку отменили
+            if (!downloader.downloads.has(entity.index)) { // загрузку отменили
                 return;
             }
             const writer = new ID3Writer(trackArrayBuffer);
             const artists = utils.parseArtists(entity.track.artists);
-            if (entity.title) {
+            if ('title' in entity) {
                 writer.setFrame('TIT2', entity.title);
             }
             if (artists.artists.length) {
                 writer.setFrame('TPE1', artists.artists);
             }
-            if (trackAlbum.title) {
+            if ('title' in trackAlbum) {
                 writer.setFrame('TALB', trackAlbum.title);
             }
-            if (entity.track.durationMs) {
+            if ('durationMs' in entity.track) {
                 writer.setFrame('TLEN', entity.track.durationMs);
             }
-            if (trackAlbum.year) {
+            if ('year' in trackAlbum) {
                 writer.setFrame('TYER', trackAlbum.year);
             }
             if (artists.composers.length) {
                 writer.setFrame('TCOM', artists.composers);
             }
-            if (entity.trackPosition) {
+            if ('trackPosition' in entity) {
                 writer.setFrame('TRCK', entity.trackPosition);
             }
-            if (entity.albumPosition && entity.albumCount > 1) {
+            if ('albumPosition' in entity && entity.albumCount > 1) {
                 writer.setFrame('TPOS', entity.albumPosition);
             }
             const albumArtist = utils.parseArtists(trackAlbum.artists).artists.join(', ');
@@ -122,7 +124,7 @@
             if (genre) {
                 writer.setFrame('TCON', [genre[0].toUpperCase() + genre.substr(1)]);
             }
-            if (entity.lyrics) {
+            if ('lyrics' in entity && typeof entity.lyrics === 'string') {
                 writer.setFrame('USLT', entity.lyrics);
             }
             if (coverArrayBuffer) {
@@ -152,10 +154,10 @@
 
         if (entity.type === downloader.TYPE.TRACK) {
             trackAlbum = entity.track.albums[0];
-            if (trackAlbum.coverUri) {
+            if ('coverUri' in trackAlbum) {
                 // пример альбома без обложки: https://music.yandex.ru/album/2236232/track/23652415
                 const coverUrl = 'https://' + trackAlbum.coverUri.replace('%%', storage.current.albumCoverSizeId3);
-                chain = chain.then(() => utils.ajax(coverUrl, 'arraybuffer'))
+                chain = chain.then(() => utils.ajax(coverUrl, 'arraybuffer', null))
                     .catch(onInterruptEntityExcept404)
                     .then(arrayBuffer => {
                         coverArrayBuffer = arrayBuffer;
@@ -174,7 +176,7 @@
                 .catch(onInterruptEntity);
         } else if (entity.type === downloader.TYPE.COVER) {
             utils.ajax(entity.url, 'arraybuffer', onProgress).then(arrayBuffer => {
-                if (!downloader.downloads[entity.index]) { // загрузку отменили
+                if (!downloader.downloads.has(entity.index)) { // загрузку отменили
                     return;
                 }
                 const blob = new Blob([arrayBuffer], {type: 'image/jpeg'});
@@ -193,7 +195,7 @@
         ga('send', 'event', 'track', trackId);
         yandex.getTrack(trackId).then(json => {
             const track = json.track;
-            if (track.error) {
+            if ('error' in track) {
                 utils.logError({
                     message: 'Ошибка трека: ' + track.error,
                     details: track.id
@@ -204,17 +206,18 @@
             const trackEntity = {
                 type: downloader.TYPE.TRACK,
                 status: downloader.STATUS.WAITING,
-                index: downloader.downloads.length,
+                index: downloader.downloadsCounter++,
                 track: track,
                 artists: utils.parseArtists(track.artists).artists.join(', '),
                 title: track.title,
                 savePath: null,
                 lyrics: null,
                 loadedBytes: 0,
-                attemptCount: 0
+                attemptCount: 0,
+                browserDownloadId: null
             };
-            if (track.version) {
-                trackEntity.title += ' (' + track.version + ')';
+            if ('version' in track) {
+                trackEntity.title += ` (${track.version})`;
             }
             if (json.lyric.length && json.lyric[0].fullLyrics) {
                 trackEntity.lyrics = json.lyric[0].fullLyrics;
@@ -224,7 +227,7 @@
             const shortTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
             trackEntity.savePath = utils.clearPath(shortArtists + ' - ' + shortTitle + '.mp3', false);
 
-            downloader.downloads.push(trackEntity);
+            downloader.downloads.set(trackEntity.index, trackEntity);
             downloader.download();
         }).catch(utils.logError);
     };
@@ -237,7 +240,7 @@
             }
             const albumEntity = {
                 type: downloader.TYPE.ALBUM,
-                index: downloader.downloads.length,
+                index: downloader.downloadsCounter++,
                 duration: 0,
                 size: 0,
                 artists: utils.parseArtists(album.artists).artists.join(', '),
@@ -246,7 +249,7 @@
                 cover: null
             };
 
-            if (album.version) {
+            if ('version' in album) {
                 albumEntity.title += ' (' + album.version + ')';
             }
             let saveDir = '';
@@ -256,13 +259,13 @@
             }
             const shortAlbumArtists = albumEntity.artists.substr(0, downloader.PATH_LIMIT);
             const shortAlbumTitle = albumEntity.title.substr(0, downloader.PATH_LIMIT);
-            if (album.year) {
-                saveDir += utils.clearPath(album.year + ' - ' + shortAlbumArtists + ' - ' + shortAlbumTitle, true);
+            if ('year' in album) {
+                saveDir += utils.clearPath(`${album.year} - ${shortAlbumArtists} - ${shortAlbumTitle}`, true);
             } else {
-                saveDir += utils.clearPath(shortAlbumArtists + ' - ' + shortAlbumTitle, true);
+                saveDir += utils.clearPath(`${shortAlbumArtists} - ${shortAlbumTitle}`, true);
             }
 
-            if (storage.current.shouldDownloadCover && album.coverUri) {
+            if (storage.current.shouldDownloadCover && 'coverUri' in album) {
                 albumEntity.cover = {
                     type: downloader.TYPE.COVER,
                     index: albumEntity.index,
@@ -277,7 +280,7 @@
             album.volumes.forEach((volume, i) => {
                 const trackNameCounter = {}; // пример: https://music.yandex.ru/album/512639
                 volume.forEach((track, j) => {
-                    if (track.error) {
+                    if ('error' in track) {
                         utils.logError({
                             message: 'Ошибка трека: ' + track.error,
                             details: track.id
@@ -301,10 +304,11 @@
                         attemptCount: 0,
                         trackPosition: trackPosition,
                         albumPosition: albumPosition,
-                        albumCount: album.volumes.length
+                        albumCount: album.volumes.length,
+                        browserDownloadId: null
                     };
-                    if (track.version) {
-                        trackEntity.title += ' (' + track.version + ')';
+                    if ('version' in track) {
+                        trackEntity.title += ` (${track.version})`;
                     }
                     let shortTrackTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
 
@@ -336,7 +340,7 @@
                 return;
             }
 
-            downloader.downloads.push(albumEntity);
+            downloader.downloads.set(albumEntity.index, albumEntity);
             downloader.runAllThreads();
         }).catch(utils.logError);
     };
@@ -349,7 +353,7 @@
             }
             const playlistEntity = {
                 type: downloader.TYPE.PLAYLIST,
-                index: downloader.downloads.length,
+                index: downloader.downloadsCounter++,
                 duration: 0,
                 size: 0,
                 title: playlist.title,
@@ -360,7 +364,7 @@
             const trackNameCounter = {}; // пример https://music.yandex.ru/users/dimzon541/playlists/1002
 
             playlist.tracks.forEach((track, i) => {
-                if (track.error) {
+                if ('error' in track) {
                     utils.logError({
                         message: 'Ошибка трека: ' + track.error,
                         details: track.id
@@ -378,10 +382,11 @@
                     title: track.title,
                     savePath: null,
                     loadedBytes: 0,
-                    attemptCount: 0
+                    attemptCount: 0,
+                    browserDownloadId: null
                 };
-                if (track.version) {
-                    trackEntity.title += ' (' + track.version + ')';
+                if ('version' in track) {
+                    trackEntity.title += ` (${track.version})`;
                 }
                 const shortTrackArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
                 const shortTrackTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
@@ -409,14 +414,17 @@
                 return;
             }
 
-            downloader.downloads.push(playlistEntity);
+            downloader.downloads.set(playlistEntity.index, playlistEntity);
             downloader.runAllThreads();
         }).catch(utils.logError);
     };
 
     downloader.getWaitingEntity = () => {
         let foundEntity;
-        downloader.downloads.some(entity => {
+        downloader.downloads.forEach(entity => {
+            if (foundEntity) {
+                return;
+            }
             const isAlbum = entity.type === downloader.TYPE.ALBUM;
             const isCover = isAlbum && entity.cover;
             const isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
@@ -424,18 +432,18 @@
 
             if (isCover && entity.cover.status === downloader.STATUS.WAITING) {
                 foundEntity = entity.cover;
-                return true;
             } else if (isAlbum || isPlaylist) {
-                for (let j = 0; j < entity.tracks.length; j++) {
-                    if (entity.tracks[j].status === downloader.STATUS.WAITING) {
-                        foundEntity = entity.tracks[j];
-                        return true;
+                entity.tracks.forEach(track => {
+                    if (foundEntity) {
+                        return;
                     }
-                }
+                    if (track.status === downloader.STATUS.WAITING) {
+                        foundEntity = track;
+                    }
+                });
             } else if (isTrack) {
                 if (entity.status === downloader.STATUS.WAITING) {
                     foundEntity = entity;
-                    return true;
                 }
             }
         });
@@ -468,7 +476,10 @@
 
     downloader.getEntityByBrowserDownloadId = browserDownloadId => {
         let foundEntity;
-        downloader.downloads.some(entity => {
+        downloader.downloads.forEach(entity => {
+            if (foundEntity) {
+                return;
+            }
             const isAlbum = entity.type === downloader.TYPE.ALBUM;
             const isCover = isAlbum && entity.cover;
             const isPlaylist = entity.type === downloader.TYPE.PLAYLIST;
@@ -476,19 +487,18 @@
 
             if (isCover && entity.cover.browserDownloadId === browserDownloadId) {
                 foundEntity = entity.cover;
-                return true;
             } else if (isAlbum || isPlaylist) {
-                for (let j = 0; j < entity.tracks.length; j++) {
-                    const track = entity.tracks[j];
+                entity.tracks.forEach(track => {
+                    if (foundEntity) {
+                        return;
+                    }
                     if (track.browserDownloadId === browserDownloadId) {
                         foundEntity = track;
-                        return true;
                     }
-                }
+                });
             } else if (isTrack) {
                 if (entity.browserDownloadId === browserDownloadId) {
                     foundEntity = entity;
-                    return true;
                 }
             }
         });

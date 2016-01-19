@@ -2,6 +2,7 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const utils = {};
 
@@ -21,7 +22,7 @@
                 }
             } else {
                 reject({
-                    message: xhr.statusText + ' (' + xhr.status + ')',
+                    message: `${xhr.statusText} (${xhr.status})`,
                     details: url
                 });
             }
@@ -58,7 +59,7 @@
         for (let i = 0; i < diff; i++) {
             zeros += '0';
         }
-        return zeros + val;
+        return zeros + val.toString();
     };
 
     utils.durationToStr = duration => {
@@ -67,7 +68,7 @@
         seconds -= minutes * 60;
         const hours = Math.floor(minutes / 60);
         minutes -= hours * 60;
-        return hours + ':' + utils.addExtraZeros(minutes, 10) + ':' + utils.addExtraZeros(seconds, 10);
+        return `${hours}:${utils.addExtraZeros(minutes, 10)}:${utils.addExtraZeros(seconds, 10)}`;
     };
 
     utils.clearPath = (path, isDir) => {
@@ -86,8 +87,8 @@
     };
 
     utils.logError = error => {
-        console.error(error.message, error.details);
-        if (error.message !== 'Пустой ответ' && error.message !== 'Ошибка трека: no-rights') {
+        console.log(error);
+        if (error.message !== 'Пустой ответ' && error.message !== 'Ошибка трека: no-rights' && 'details' in error) {
             ga('send', 'event', 'error', error.message, error.details);
         }
     };
@@ -122,37 +123,42 @@
     utils.getUrlInfo = url => {
         const info = {
             isMusic: false,
-            isRadio: false
+            isRadio: false,
+            isPlaylist: false,
+            isTrack: false,
+            isAlbum: false,
+            isArtist: false,
+            isLabel: false
         };
-        const parts = url.replace(/\?.*/, '').split('/');
-        //["http:", "", "music.yandex.ru", "users", "furfurmusic", "playlists", "1000"]
-        const musicMatch = parts[2].match(/^music\.yandex\.(ru|by|kz|ua)$/);
+        const urlData = new URL(url);
+        const parts = urlData.pathname.split('/');
+        const musicMatch = urlData.hostname.match(/^music\.yandex\.(ru|by|kz|ua)$/);
         if (musicMatch) {
             info.isMusic = true;
             storage.current.domain = musicMatch[1];
         }
-        const radioMatch = parts[2].match(/^radio\.yandex\.(ru|by|kz|ua)$/);
+        const radioMatch = urlData.hostname.match(/^radio\.yandex\.(ru|by|kz|ua)$/);
         if (radioMatch) {
             info.isRadio = true;
             storage.current.domain = radioMatch[1];
         }
         if (info.isMusic) {
-            info.isPlaylist = (parts[3] === 'users' && parts[5] === 'playlists' && !!parts[6]);
-            info.isTrack = (parts[3] === 'album' && parts[5] === 'track' && !!parts[6]);
-            info.isAlbum = (parts[3] === 'album' && !!parts[4] && parts[5] !== 'track');
-            info.isArtist = (parts[3] === 'artist' && !!parts[4]);
-            info.isLabel = (parts[3] === 'label' && !!parts[4]);
+            info.isPlaylist = (parts.length === 5 && parts[1] === 'users' && parts[3] === 'playlists');
+            info.isTrack = (parts.length === 5 && parts[1] === 'album' && parts[3] === 'track');
+            info.isAlbum = (parts.length === 3 && parts[1] === 'album');
+            info.isArtist = (parts.length > 2 && parts[1] === 'artist');
+            info.isLabel = (parts.length > 2 && parts[1] === 'label');
             if (info.isPlaylist) {
-                info.username = parts[4];
-                info.playlistId = parts[6];
+                info.username = parts[2];
+                info.playlistId = parts[4];
             } else if (info.isTrack) {
-                info.trackId = parts[6];
+                info.trackId = parts[4];
             } else if (info.isAlbum) {
-                info.albumId = parts[4];
+                info.albumId = parts[2];
             } else if (info.isArtist) {
-                info.artistId = parts[4];
+                info.artistId = parts[2];
             } else if (info.isLabel) {
-                info.labelId = parts[4];
+                info.labelId = parts[2];
             }
         }
         return info;
@@ -212,7 +218,7 @@
 
     utils.checkUpdate = () => new Promise(resolve => {
         const releaseInfoUrl = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases/latest';
-        utils.ajax(releaseInfoUrl, 'json').then(releaseInfo => {
+        utils.ajax(releaseInfoUrl, 'json', null).then(releaseInfo => {
             const latestVersion = releaseInfo.tag_name.replace('v', '').split('.');
             const currentVersion = chrome.runtime.getManifest().version.split('.');
 

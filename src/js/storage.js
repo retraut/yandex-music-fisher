@@ -2,6 +2,7 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const storage = {
         defaults: {
@@ -46,15 +47,7 @@
     };
 
     storage.resetAll = () => new Promise(resolve => {
-        const data = {};
-        for (const param in storage.defaults) {
-            if (storage.defaults.hasOwnProperty(param)) {
-                data[param] = storage.defaults[param];
-            }
-        }
-        chrome.storage.local.clear(() => {
-            chrome.storage.local.set(data, resolve);
-        });
+        chrome.storage.local.clear(() => chrome.storage.local.set(storage.defaults, resolve));
     });
 
     window.storage = storage;

@@ -2,6 +2,7 @@
 
 (() => {
     'use strict';
+    'use strong';
 
     const $ = document.getElementById.bind(document);
     let backgroundPage, updateIntervalId;
@@ -108,9 +109,8 @@
 
     const updateDownloader = () => {
         const downloads = backgroundPage.downloader.downloads;
-        const downloadsLength = downloads.reduce(count => ++count, 0); // отбрасываются загрузки, которые удалили
         let content = '';
-        if (!downloadsLength) {
+        if (!downloads.size) {
             content += 'Загрузок нет.<br><br>';
             content += 'Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка';
         }
@@ -156,6 +156,7 @@
     $('settingsBtn').addEventListener('click', () => chrome.runtime.openOptionsPage());
 
     $('downloadContainer').addEventListener('mousedown', e => {
+        const downloads = backgroundPage.downloader.downloads;
         const isRemoveBtnClick = e.target.classList.contains('remove-btn');
         const isRestoreBtnClick = e.target.classList.contains('restore-btn');
 
@@ -163,9 +164,13 @@
             return;
         }
 
-        const downloadId = e.target.getAttribute('data-id');
-        const entity = backgroundPage.downloader.downloads[downloadId];
+        const downloadId = parseInt(e.target.getAttribute('data-id'));
 
+        if (!downloads.has(downloadId)) {
+            return;
+        }
+
+        const entity = downloads.get(downloadId);
         const isAlbum = entity.type === backgroundPage.downloader.TYPE.ALBUM;
         const isCover = isAlbum && entity.cover;
         const isPlaylist = entity.type === backgroundPage.downloader.TYPE.PLAYLIST;
@@ -186,7 +191,7 @@
                     }
                 });
             }
-            delete(backgroundPage.downloader.downloads[downloadId]);
+            downloads.delete(downloadId);
             backgroundPage.downloader.runAllThreads();
         } else if (isRestoreBtnClick) {
             if (isCover && entity.cover.status === backgroundPage.downloader.STATUS.INTERRUPTED) {
@@ -221,7 +226,7 @@
                 break;
             case 'album':
                 const albumId = $('startDownloadBtn').getAttribute('data-albumId');
-                backgroundPage.downloader.downloadAlbum(albumId);
+                backgroundPage.downloader.downloadAlbum(albumId, null);
                 break;
             case 'playlist':
                 const username = $('startDownloadBtn').getAttribute('data-username');
@@ -263,6 +268,11 @@
         let albumContent = '';
         let compilationContent = '';
 
+        artist.albums.forEach((album, i) => {
+            if (!('year' in album)) {
+                artist.albums[i].year = 0;
+            }
+        });
         const sortedAlbums = artist.albums.sort((a, b) => b.year - a.year);
         if (sortedAlbums.length) {
             const name = `Альбомы (${sortedAlbums.length})`;
@@ -272,15 +282,20 @@
         sortedAlbums.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                albumContent += `<br><label class="label-year">${year}</label><br>`;
+                albumContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
             }
             let title = `[${album.trackCount}] ${album.title}`;
-            if (album.version) {
+            if ('version' in album) {
                 title += ` (${album.version})`;
             }
             albumContent += `<label><input type="checkbox" class="album" checked value="${album.id}">${title}</label><br>`;
         });
 
+        artist.alsoAlbums.forEach((album, i) => {
+            if (!('year' in album)) { // пример https://music.yandex.ru/artist/64248
+                artist.alsoAlbums[i].year = 0;
+            }
+        });
         const sortedCompilations = artist.alsoAlbums.sort((a, b) => b.year - a.year);
         if (sortedCompilations.length) {
             const name = `Сборники (${sortedCompilations.length})`;
@@ -290,16 +305,16 @@
         sortedCompilations.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                compilationContent += `<br><label class="label-year">${year}</label><br>`;
+                compilationContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
             }
             let title = `[${album.trackCount}] ${album.title}`;
-            if (album.version) {
+            if ('version' in album) {
                 title += ` (${album.version})`;
             }
             compilationContent += `<label><input type="checkbox" class="compilation" value="${album.id}">${title}</label><br>`;
         });
-        $('name').innerHTML = artist.artist.name;
-        $('info').innerHTML = 'Дискография';
+        $('name').innerText = artist.artist.name;
+        $('info').innerText = 'Дискография';
         $('albums').innerHTML = albumContent;
         $('compilations').innerHTML = compilationContent;
 
@@ -326,6 +341,12 @@
 
     const generateDownloadLabel = label => {
         let albumContent = '';
+
+        label.albums.forEach((album, i) => {
+            if (!('year' in album)) {
+                label.albums[i].year = 0;
+            }
+        });
         const sortedAlbums = label.albums.sort((a, b) => b.year - a.year);
         if (sortedAlbums.length) {
             const name = `Альбомы (${sortedAlbums.length})`;
@@ -335,19 +356,19 @@
         sortedAlbums.forEach(album => {
             if (album.year !== year) {
                 year = album.year;
-                albumContent += `<br><label class="label-year">${year}</label><br>`;
+                albumContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
             }
             const artists = backgroundPage.utils.parseArtists(album.artists).artists.join(', ');
             let title = album.title;
-            if (album.version) {
-                title += ' (' + album.version + ')';
+            if ('version' in album) {
+                title += ` (${album.version})`;
             }
             const name = `[${album.trackCount}] ${artists} - ${title}`;
             albumContent += `<label><input type="checkbox" class="album" value="${album.id}">${name}</label><br>`;
         });
 
-        $('name').innerHTML = label.label.name;
-        $('info').innerHTML = 'Лейбл';
+        $('name').innerText = label.label.name;
+        $('info').innerText = 'Лейбл';
         $('albums').innerHTML = albumContent;
 
         if (sortedAlbums.length) {
@@ -366,15 +387,15 @@
         const artists = backgroundPage.utils.parseArtists(track.artists).artists.join(', ');
         const size = backgroundPage.utils.bytesToStr(track.fileSize);
         const duration = backgroundPage.utils.durationToStr(track.durationMs);
-        $('name').innerHTML = `${artists} - ${track.title}`;
-        $('info').innerHTML = `Трек / ${size} / ${duration}`;
+        $('name').innerText = `${artists} - ${track.title}`;
+        $('info').innerText = `Трек / ${size} / ${duration}`;
     };
 
     const generateDownloadAlbum = album => {
         const artists = backgroundPage.utils.parseArtists(album.artists).artists.join(', ');
-        $('name').innerHTML = `${artists} - ${album.title}`;
+        $('name').innerText = `${artists} - ${album.title}`;
         if (!album.trackCount) {
-            $('info').innerHTML = 'Пустой альбом';
+            $('info').innerText = 'Пустой альбом';
             $('startDownloadBtn').style.display = 'none';
             backgroundPage.utils.logError({
                 message: 'Пустой альбом',
@@ -387,21 +408,22 @@
         let duration = 0;
         album.volumes.forEach(volume => {
             volume.forEach(track => {
-                if (!track.error) {
-                    size += track.fileSize;
-                    duration += track.durationMs;
+                if ('error' in track) {
+                    return;
                 }
+                size += track.fileSize;
+                duration += track.durationMs;
             });
         });
-        size = backgroundPage.utils.bytesToStr(size);
-        duration = backgroundPage.utils.durationToStr(duration);
-        $('info').innerHTML = `Альбом (${album.trackCount}) / ${size} / ${duration}`;
+        const sizeStr = backgroundPage.utils.bytesToStr(size);
+        const durationStr = backgroundPage.utils.durationToStr(duration);
+        $('info').innerText = `Альбом (${album.trackCount}) / ${sizeStr} / ${durationStr}`;
     };
 
     const generateDownloadPlaylist = playlist => {
-        $('name').innerHTML = playlist.title;
+        $('name').innerText = playlist.title;
         if (!playlist.trackCount) {
-            $('info').innerHTML = 'Пустой плейлист';
+            $('info').innerText = 'Пустой плейлист';
             $('startDownloadBtn').style.display = 'none';
             backgroundPage.utils.logError({
                 message: 'Пустой плейлист',
@@ -413,14 +435,15 @@
         let size = 0;
         let duration = 0;
         playlist.tracks.forEach(track => {
-            if (!track.error) {
-                size += track.fileSize;
-                duration += track.durationMs;
+            if ('error' in track) {
+                return;
             }
+            size += track.fileSize;
+            duration += track.durationMs;
         });
-        size = backgroundPage.utils.bytesToStr(size);
-        duration = backgroundPage.utils.durationToStr(duration);
-        $('info').innerHTML = `Плейлист (${playlist.trackCount}) / ${size} / ${duration}`;
+        const sizeStr = backgroundPage.utils.bytesToStr(size);
+        const durationStr = backgroundPage.utils.durationToStr(duration);
+        $('info').innerText = `Плейлист (${playlist.trackCount}) / ${sizeStr} / ${durationStr}`;
     };
 
     const onAjaxFail = error => {
@@ -490,7 +513,7 @@
             } else if (page.isMusic || page.isRadio) {
                 chrome.tabs.sendMessage(activeTab.id, 'getCurrentTrackUrl');
                 chrome.runtime.onMessage.addListener(function (request) {
-                    if (!request || request.action !== 'getCurrentTrackUrl' || !request.link) {
+                    if (!request || request.action !== 'getCurrentTrackUrl' || !('link' in request)) {
                         hidePreloader();
                         $('downloadBtn').click();
                         $('addBtn').classList.add('disabled');

@@ -1,5 +1,6 @@
 (() => {
     'use strict';
+    'use strong';
 
     const MIN_SIZE = 10;
     const MAX_SIZE = 2000;

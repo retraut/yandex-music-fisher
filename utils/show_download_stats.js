@@ -1,5 +1,6 @@
 (() => {
     'use strict';
+    'use strong';
 
     function parseResponse(response) {
         if (!response.ok) {
