@@ -1,58 +1,74 @@
-/* global utils, storage */
+/* global fisher */
 
-(() => {
-    'use strict';
-    'use strong';
+const md5 = require('blueimp-md5');
 
-    const generateDownloadLink = info => {
-        const salt = 'XGRlBW9FXlekgbPrRHuSiA';
-        const md5 = window.md5(salt + info.path.substr(1) + info.s);
-        return `https://${info.host}/get-mp3/${md5}/${info.ts + info.path}`;
-    };
+const options = {
+    redirect: 'error',
+    credentials: 'include'
+};
 
-    const yandex = {};
+function generateDownloadLink(info) {
+    const salt = 'XGRlBW9FXlekgbPrRHuSiA';
+    const hash = md5(salt + info.path.substr(1) + info.s);
+    return `https://${info.host}/get-mp3/${hash}/${info.ts + info.path}`;
+}
 
-    yandex.baseUrl = () => `https://music.yandex.${storage.current.domain}`;
+class Yandex {
 
-    yandex.getTrackUrl = trackId => {
-        const url = `${yandex.baseUrl()}/api/v2.0/handlers/track/${trackId}/download`;
-        return utils.ajax(url, 'json', null)
-            .then(info => utils.ajax(info.src + '&format=json', 'json', null))
+    constructor(domain = 'ru') {
+        this.setDomain(domain);
+    }
+
+    setDomain(domain = 'ru') {
+        this.baseUrl = `https://music.yandex.${domain}`;
+    }
+
+    getTrackUrl(trackId) {
+        const url = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse)
+            .then(info => fetch(info.src + '&format=json'), options)
+            .then(fisher.utils.parseJsonResponse)
             .then(generateDownloadLink);
-    };
+    }
 
-    yandex.getTrackOldUrl = storageDir => {
+    getTrackOldUrl(storageDir) {
         const url = `https://storage.mds.yandex.net/download-info/${storageDir}/2?format=json`;
-        return utils.ajax(url, 'json', null)
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse)
             .then(generateDownloadLink);
-    };
+    }
 
-    yandex.getTrack = trackId => {
-        const url = `${yandex.baseUrl()}/handlers/track.jsx?track=${trackId}`;
-        return utils.ajax(url, 'json', null);
-    };
+    getTrack(trackId) {
+        const url = `${this.baseUrl}/handlers/track.jsx?track=${trackId}`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse);
+    }
 
-    yandex.getArtist = artistId => {
-        const url = `${yandex.baseUrl()}/handlers/artist.jsx?artist=${artistId}&what=albums`;
-        return utils.ajax(url, 'json', null);
-    };
+    getArtist(artistId) {
+        const url = `${this.baseUrl}/handlers/artist.jsx?artist=${artistId}&what=albums`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse);
+    }
 
-    yandex.getAlbum = albumId => {
-        const url = `${yandex.baseUrl()}/handlers/album.jsx?album=${albumId}`;
-        return utils.ajax(url, 'json', null);
-    };
+    getAlbum(albumId) {
+        const url = `${this.baseUrl}/handlers/album.jsx?album=${albumId}`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse);
+    }
 
-    yandex.getPlaylist = (username, playlistId) => {
-        const url = `${yandex.baseUrl()}/handlers/playlist.jsx?owner=${username}&kinds=${playlistId}`;
-        return utils.ajax(url, 'json', null)
+    getPlaylist(username, playlistId) {
+        const url = `${this.baseUrl}/handlers/playlist.jsx?owner=${username}&kinds=${playlistId}`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse)
             .then(json => json.playlist);
-    };
+    }
 
-    yandex.getLabel = labelId => {
-        const url = `${yandex.baseUrl()}/handlers/label.jsx?sort=year&id=${labelId}`;
-        return utils.ajax(url, 'json', null);
-    };
+    getLabel(labelId) {
+        const url = `${this.baseUrl}/handlers/label.jsx?sort=year&id=${labelId}`;
+        return fetch(url, options)
+            .then(fisher.utils.parseJsonResponse);
+    }
+}
 
-    window.yandex = yandex;
-
-})();
+module.exports = Yandex;

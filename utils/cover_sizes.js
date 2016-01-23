@@ -5,7 +5,7 @@
     const MIN_SIZE = 10;
     const MAX_SIZE = 2000;
     const SIZE_INCREMENT = 5;
-    const coverUrl = 'https://avatars.yandex.net/get-music-content/78e6a9c4.a.960649-1/';
+    const coverUrl = 'https://avatars.yandex.net/get-music-content/d880c58e.a.2256742-1/';
     const options = {
         method: 'HEAD',
         mode: 'cors'

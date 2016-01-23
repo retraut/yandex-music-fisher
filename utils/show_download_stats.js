@@ -1,16 +1,11 @@
+/* global fisher */
+
 (() => {
     'use strict';
     'use strong';
 
-    function parseResponse(response) {
-        if (!response.ok) {
-            throw new Error(`${response.status} (${response.statusText})`);
-        }
-        return response.json();
-    }
-
     fetch('https://api.github.com/repos/egoroof/yandex-music-fisher/releases')
-        .then(parseResponse)
+        .then(fisher.utils.parseJsonResponse)
         .then(releases => {
             console.log('GitHub statistics');
             let totalDownloadCount = 0;
@@ -22,7 +17,7 @@
         }).catch(e => console.error(e));
 
     fetch('https://bitbucket.org/api/2.0/repositories/egoroof/yandex-music-fisher/downloads')
-        .then(parseResponse)
+        .then(fisher.utils.parseJsonResponse)
         .then(info => {
             console.log('Bitbucket statistics');
             let totalDownloadCount = 0;

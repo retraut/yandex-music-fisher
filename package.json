@@ -1,0 +1,31 @@
+{
+  "name": "yandex-music-fisher",
+  "version": "0.0.0-not-a-package",
+  "description": "Downloader for Яндекс.Музыка & Яндекс.Радио (Chromium extension)",
+  "main": "not-a-package",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "build-watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egoroof/yandex-music-fisher.git"
+  },
+  "author": "egoroof",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/egoroof/yandex-music-fisher/issues"
+  },
+  "homepage": "https://github.com/egoroof/yandex-music-fisher#readme",
+  "devDependencies": {
+    "babel-core": "6.4.5",
+    "babel-loader": "6.2.1",
+    "babel-plugin-syntax-async-functions": "6.3.13",
+    "babel-plugin-transform-async-to-generator": "6.4.6",
+    "babel-plugin-transform-es2015-parameters": "6.4.5",
+    "babel-plugin-transform-strict-mode": "6.3.13",
+    "blueimp-md5": "2.1.0",
+    "webpack": "1.12.11"
+  }
+}

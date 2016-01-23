@@ -1,3 +1,5 @@
 .idea/
+node_modules/
 todo.md
 release_checklist.md
+src/bundle/
