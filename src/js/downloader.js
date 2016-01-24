@@ -1,6 +1,6 @@
-/* global chrome, fisher, ga, ID3Writer */
+/* global chrome, fisher, ga */
 
-require('../vendor/browser-id3-writer-1.2.0.min');
+const ID3Writer = require('browser-id3-writer');
 
 const downloader = {
     TYPE: Object.freeze({
