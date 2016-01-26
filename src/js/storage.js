@@ -1,5 +1,3 @@
-/* global chrome */
-
 const storage = {
     defaults: {
         downloadThreadCount: 4,
@@ -18,30 +16,32 @@ const storage = {
 
 storage.init = () => {
     const keys = Object.keys(storage.defaults);
-    chrome.storage.local.get(keys, items => {
+
+    chrome.storage.local.get(keys, (items) => {
         for (let i = 0; i < keys.length; i++) {
-            if (items[keys[i]] === undefined) {
+            if (typeof items[keys[i]] === 'undefined') {
                 storage.reset(keys[i]);
             }
         }
     });
 };
 
-storage.load = () => new Promise(resolve => {
-    chrome.storage.local.get(params => {
+storage.load = () => new Promise((resolve) => {
+    chrome.storage.local.get((params) => {
         storage.current = params;
         resolve();
     });
 });
 
-storage.reset = param => {
+storage.reset = (param) => {
     const defaultValue = storage.defaults[param];
     const data = {};
+
     data[param] = defaultValue;
     chrome.storage.local.set(data, storage.load);
 };
 
-storage.resetAll = () => new Promise(resolve => {
+storage.resetAll = () => new Promise((resolve) => {
     chrome.storage.local.clear(() => chrome.storage.local.set(storage.defaults, resolve));
 });
 

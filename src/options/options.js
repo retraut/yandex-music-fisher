@@ -1,5 +1,3 @@
-/* global chrome */
-
 const $ = document.getElementById.bind(document);
 const checkboxes = [
     'shouldDownloadCover',
@@ -20,12 +18,14 @@ let backgroundPage;
 
 function saveSetting(setting, value) {
     const options = {};
+
     options[setting] = value;
     chrome.storage.local.set(options, backgroundPage.fisher.storage.load);
 }
 
 function afterCheckboxChanged(checkbox) {
     const checked = $(checkbox).checked;
+
     if (checkbox === 'shouldDownloadCover') {
         if (checked) {
             $('albumCoverSize').removeAttribute('disabled');
@@ -36,7 +36,8 @@ function afterCheckboxChanged(checkbox) {
         const permissions = {
             permissions: ['background']
         };
-        chrome.permissions.contains(permissions, contains => {
+
+        chrome.permissions.contains(permissions, (contains) => {
             if ('lastError' in chrome.runtime) { // opera
                 backgroundPage.console.info(chrome.runtime.lastError.message);
                 $('backgroundDownload').parentNode.parentNode.parentNode.style.display = 'none';
@@ -48,9 +49,10 @@ function afterCheckboxChanged(checkbox) {
     }
 }
 
-checkboxes.forEach(checkbox => {
+checkboxes.forEach((checkbox) => {
     $(checkbox).addEventListener('click', () => {
         const checked = $(checkbox).checked;
+
         saveSetting(checkbox, checked);
         afterCheckboxChanged(checkbox);
 
@@ -58,14 +60,15 @@ checkboxes.forEach(checkbox => {
             const permissions = {
                 permissions: ['background']
             };
+
             if (checked) {
-                chrome.permissions.request(permissions, granted => {
+                chrome.permissions.request(permissions, (granted) => {
                     if (!granted) {
                         saveSetting(checkbox, false);
                     }
                 });
             } else {
-                chrome.permissions.remove(permissions, removed => {
+                chrome.permissions.remove(permissions, (removed) => {
                     if (!removed) {
                         saveSetting(checkbox, false);
                     }
@@ -75,11 +78,12 @@ checkboxes.forEach(checkbox => {
     });
 });
 
-selects.forEach(select => {
+selects.forEach((select) => {
     $(select).addEventListener('click', () => {
         let value = $(select).value;
+
         if (select === 'downloadThreadCount') {
-            value = parseInt(value);
+            value = parseInt(value, 10);
         }
         saveSetting(select, value);
     });
@@ -92,7 +96,7 @@ $('btnReset').addEventListener('click', async() => {
 });
 
 function getBackgroundPage() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         chrome.runtime.getBackgroundPage(resolve);
     });
 }
@@ -100,12 +104,14 @@ function getBackgroundPage() {
 async function loadOptions() {
     backgroundPage = await getBackgroundPage();
 
-    checkboxes.forEach(checkbox => {
+    checkboxes.forEach((checkbox) => {
         $(checkbox).checked = backgroundPage.fisher.storage.current[checkbox];
         afterCheckboxChanged(checkbox);
     });
 
-    selects.forEach(select => $(select).value = backgroundPage.fisher.storage.current[select]);
+    selects.forEach((select) => {
+        $(select).value = backgroundPage.fisher.storage.current[select];
+    });
 }
 
 loadOptions();
