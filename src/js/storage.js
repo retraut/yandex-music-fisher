@@ -8,8 +8,7 @@ const storage = {
         enumeratePlaylists: false,
         shouldNotifyAboutUpdates: true,
         singleClickDownload: false,
-        backgroundDownload: false,
-        downloadHighestBitrate: true
+        backgroundDownload: false
     },
     current: {}
 };

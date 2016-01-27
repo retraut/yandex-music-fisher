@@ -5,8 +5,7 @@ const checkboxes = [
     'enumeratePlaylists',
     'shouldNotifyAboutUpdates',
     'singleClickDownload',
-    'backgroundDownload',
-    'downloadHighestBitrate'
+    'backgroundDownload'
 ];
 const selects = [
     'downloadThreadCount',

@@ -12,12 +12,8 @@ class yandex {
         return `https://music.yandex.${fisher.storage.current.domain}`;
     }
 
-    static get quality() {
-        return fisher.storage.current.downloadHighestBitrate ? 1 : 0;
-    }
-
     static getTrackUrl(trackId) {
-        const url = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=${this.quality}`;
+        const url = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
 
         return fetch(url, options)
             .then(fisher.utils.parseJsonResponse)

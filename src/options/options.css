@@ -33,8 +33,3 @@ tr {
 td:nth-child(2) {
     padding-left: 10px;
 }
-
-span.dotted {
-    border-bottom: 1px dashed #999;
-    text-decoration: none;
-}
