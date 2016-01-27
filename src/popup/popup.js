@@ -169,7 +169,7 @@ $('downloadContainer').addEventListener('mousedown', (e) => {
         return;
     }
 
-    const downloadId = e.target.getAttribute('data-id');
+    const downloadId = parseInt(e.target.getAttribute('data-id'), 10);
 
     if (!downloads.has(downloadId)) {
         return;

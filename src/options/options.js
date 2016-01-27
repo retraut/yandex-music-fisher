@@ -23,7 +23,7 @@ function saveSetting(setting, value) {
     chrome.storage.local.set(options, backgroundPage.fisher.storage.load);
 }
 
-function afterCheckboxChanged(checkbox) {
+function afterCheckboxChanged(checkbox) { // изменение UI
     const checked = $(checkbox).checked;
 
     if (checkbox === 'shouldDownloadCover') {

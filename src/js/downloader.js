@@ -44,7 +44,6 @@ downloader.download = async() => {
     downloader.activeThreadCount++;
     let coverBuffer;
     let trackAlbum;
-    let trackUrl;
 
     async function onInterruptEntity(error) {
         entity.attemptCount++;
@@ -153,11 +152,7 @@ downloader.download = async() => {
             }
         }
         try {
-            if (fisher.storage.current.downloadHighestBitrate) {
-                trackUrl = await fisher.yandex.getTrackUrl(entity.track.id);
-            } else {
-                trackUrl = await fisher.yandex.getTrackOldUrl(entity.track.storageDir);
-            }
+            const trackUrl = await fisher.yandex.getTrackUrl(entity.track.id);
             const buffer = await fisher.utils.fetchBuffer(trackUrl, onProgress);
 
             await saveTrack(buffer);

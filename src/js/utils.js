@@ -126,10 +126,10 @@ function getUrlInfo(url) {
 
     if (musicMatch) {
         info.isMusic = true;
-        fisher.yandex.setDomain(musicMatch[1]);
+        fisher.storage.current.domain = musicMatch[1];
     } else if (radioMatch) {
         info.isRadio = true;
-        fisher.yandex.setDomain(radioMatch[1]);
+        fisher.storage.current.domain = radioMatch[1];
     }
     if (info.isMusic) {
         info.isPlaylist = Boolean(parts.length === 5 && parts[1] === 'users' && parts[3] === 'playlists');
