@@ -53,15 +53,7 @@ downloader.download = async() => {
             entity.status = downloader.STATUS.WAITING;
             downloader.download();
         } else {
-            let errorDetails = '';
-
             entity.status = downloader.STATUS.INTERRUPTED;
-            if (entity.type === downloader.TYPE.TRACK) {
-                errorDetails = entity.track.id;
-            } else if (entity.type === downloader.TYPE.COVER) {
-                errorDetails = entity.url;
-            }
-            ga('send', 'event', 'error', error, errorDetails);
             console.error(error, entity);
         }
         downloader.activeThreadCount--;

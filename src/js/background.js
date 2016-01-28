@@ -71,7 +71,11 @@ chrome.commands.onCommand.addListener((command) => {
         chrome.tabs.query({
             url: chrome.runtime.getManifest().content_scripts[0].matches,
             audible: true
-        }, (tabs) => tabs.forEach((tab) => chrome.tabs.sendMessage(tab.id, 'downloadCurrentTrack')));
+        }, (tabs) => {
+            tabs.forEach((tab) => {
+                chrome.tabs.sendMessage(tab.id, 'downloadCurrentTrack');
+            });
+        });
     }
 });
 
@@ -99,17 +103,8 @@ chrome.downloads.onChanged.addListener((delta) => {
                         downloader.download();
                     });
                 } else {
-                    let errorDetails = '';
-
                     entity.status = downloader.STATUS.INTERRUPTED;
-                    if (entity.type === downloader.TYPE.TRACK) {
-                        errorDetails = entity.track.id;
-                    } else if (entity.type === downloader.TYPE.COVER) {
-                        errorDetails = entity.url;
-                    }
-
-                    console.error(download.error, errorDetails);
-                    ga('send', 'event', 'error', download.error, errorDetails);
+                    console.error(download.error, entity);
                 }
             }
             window.URL.revokeObjectURL(download.url);
