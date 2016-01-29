@@ -1,4 +1,4 @@
-# Yandex Music Fisher ($version$)
+# Yandex Music Fisher (#version#)
 
 Расширение браузера для загрузки музыки с сервисов [Яндекс.Музыка](https://music.yandex.ru/)
 и [Яндекс.Радио](https://radio.yandex.ru/).
@@ -28,7 +28,7 @@
 
 ### Установка
 
-[Скачайте архив по этой ссылке](https://github.com/egoroof/yandex-music-fisher/releases/download/v$version$/yandex-music-fisher_$version$.zip),
+[Скачайте архив по этой ссылке](https://github.com/egoroof/yandex-music-fisher/releases/download/v#version#/yandex-music-fisher_#version#.zip),
 извлеките в текущую папку, откройте страницу расширений в браузере и перенесите туда мышкой извлечённую папку __yandex-music-fisher__,
 после чего в браузере появится новое расширение:
 
@@ -81,3 +81,5 @@
 1. Устанавливаем [Node.js](https://nodejs.org/en/).
 2. Устанавливаем зависимости: `npm install`
 3. Собираем расширение: `npm run build`
+
+Загружать распакованное расширение из папки `src`.
