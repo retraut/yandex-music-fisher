@@ -13,7 +13,12 @@ async function loadPage() {
 }
 
 document.getElementById('trackIdInput').addEventListener('input', async function (event) {
-    const trackId = parseInt(event.target.value, 10);
+    const trackId = Number(event.target.value);
+
+    if (!Number.isInteger(trackId) || trackId < 1) {
+        output.innerHTML = 'Wrong track ID';
+        return;
+    }
 
     let response;
 
@@ -21,6 +26,7 @@ document.getElementById('trackIdInput').addEventListener('input', async function
         response = await backgroundPage.fisher.yandex.getTrack(trackId);
     } catch (e) {
         output.innerHTML = 'Network error';
+        return;
     }
 
     const track = response.track;
