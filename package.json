@@ -9,7 +9,7 @@
     "increment-version-major": "node utils/increment_version.js --version=major",
     "increment-version-minor": "node utils/increment_version.js --version=minor",
     "increment-version-patch": "node utils/increment_version.js --version=patch",
-    "make-dist": "node utils/make_dist.js"
+    "make-dist": "npm run build && node utils/make_dist.js"
   },
   "repository": {
     "type": "git",
