@@ -1,17 +1,17 @@
 'use strict';
 
-const argv = require('yargs').argv;
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const MANIFEST_PATH = path.join(path.dirname(__dirname), 'src', 'manifest.json');
+const argvVersion = process.argv[2].split('=')[1];
 
 let manifest = require('../src/manifest.json');
 
 const oldVersion = manifest.version;
 const splittedVersion = oldVersion.split('.');
 
-switch (argv.version) {
+switch (argvVersion) {
     case 'major':
     {
         splittedVersion[0]++;
@@ -43,4 +43,4 @@ const newManifest = JSON.stringify(manifest, null, 2).replace(/[\n]/g, os.EOL) +
 
 fs.writeFileSync(MANIFEST_PATH, newManifest);
 
-console.log(`Version was increased from ${oldVersion} to ${manifest.version}`);
+console.log(`manifest.json version was increased from ${oldVersion} to ${manifest.version}`);
