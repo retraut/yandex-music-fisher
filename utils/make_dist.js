@@ -37,7 +37,7 @@ const list = walkSync('src/');
 const zip = new JSZip();
 const root = zip.folder('yandex-music-fisher');
 
-list.forEach(file => {
+list.forEach((file) => {
     root.file(file.path, file.data);
 });
 

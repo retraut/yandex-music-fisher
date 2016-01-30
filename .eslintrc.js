@@ -144,13 +144,14 @@ module.exports = {
         "indent": 1, // specify tab or space width for your code
         "jsx-quotes": 2, // specify whether double or single quotes should be used in JSX attributes
         "key-spacing": 2, // enforce spacing between keys and values in object literal properties
+        "keyword-spacing": 2, // enforce spacing before and after keywords
         "linebreak-style": [2, "windows"], // disallow mixed 'LF' and 'CRLF' as linebreaks
         "lines-around-comment": 2, // enforce empty lines around comments
         "max-depth": 2, // specify the maximum depth that blocks can be nested
         "max-len": [2, 120], // specify the maximum length of a line in your program
         "max-nested-callbacks": 2, // specify the maximum depth callbacks can be nested
         "max-params": [2, 5], // limits the number of parameters that can be used in the function declaration.
-        "max-statements": 2, // specify the maximum number of statement allowed in a function
+        "max-statements": 1, // specify the maximum number of statement allowed in a function
         "new-cap": 2, // require a capital letter for constructors
         "new-parens": 2, // disallow the omission of parentheses when invoking a constructor with no arguments
         "newline-after-var": 2, // require or disallow an empty newline after variable declarations
@@ -182,13 +183,10 @@ module.exports = {
         "semi-spacing": 2, // enforce spacing before and after semicolons
         "semi": 2, // require or disallow use of semicolons instead of ASI
         "sort-vars": 2, // sort variables within the same declaration block
-        "space-after-keywords": 2, // require a space after certain keywords
         "space-before-blocks": 2, // require or disallow a space before blocks
         "space-before-function-paren": 0, // require or disallow a space before function opening parenthesis
-        "space-before-keywords": 2, // require a space before certain keywords
         "space-in-parens": 2, // require or disallow spaces inside parentheses
         "space-infix-ops": 2, // require spaces around operators
-        "space-return-throw-case": 2, // require a space after return, throw, and case
         "space-unary-ops": 2, // require or disallow spaces before/after unary operators
         "spaced-comment": 2, // require or disallow a space immediately following the // or /* in a comment
         "wrap-regex": 2, // require regex literals to be wrapped in parentheses
@@ -199,8 +197,8 @@ module.exports = {
         "arrow-spacing": 2, // require space before/after arrow function's arrow 
         "constructor-super": 2, // verify calls of super() in constructors
         "generator-star-spacing": 1, // enforce spacing around the * in generator functions
-        "no-arrow-condition": 2, // disallow arrow functions where a condition is expected
         "no-class-assign": 2, // disallow modifying variables of class declarations
+        "no-confusing-arrow": 2, // disallow arrow functions where they could be confused with comparisons
         "no-const-assign": 2, // disallow modifying variables that are declared using const
         "no-dupe-class-members": 2, // disallow duplicate name in class members
         "no-this-before-super": 2, // disallow use of this/super before calling super() in constructors.
