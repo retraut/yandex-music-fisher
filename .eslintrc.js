@@ -42,6 +42,7 @@ module.exports = {
 
         // best practices
         "accessor-pairs": 2, // Enforces getter/setter pairs in objects
+        "array-callback-return": 2, // Enforces return statements in callbacks of array's methods
         "block-scoped-var": 2, // treat var statements as if they were block scoped
         "complexity": 2, // specify the maximum cyclomatic complexity allowed in a program
         "consistent-return": 2, // require return statements to either always or never specify values
@@ -65,6 +66,7 @@ module.exports = {
         "no-fallthrough": 2, // disallow fallthrough of case statements
         "no-floating-decimal": 2, // disallow the use of leading or trailing decimal points in numeric literals
         "no-implicit-coercion": 2, // disallow the type conversions with shorter notations
+        "no-implicit-globals": 2, // disallow var and named functions in global scope
         "no-implied-eval": 2, // disallow use of eval()-like methods
         "no-invalid-this": 2, // disallow this keywords outside of classes or class-like objects
         "no-iterator": 2, // disallow usage of __iterator__ property
@@ -89,6 +91,7 @@ module.exports = {
         "no-self-compare": 2, // disallow comparisons where both sides are exactly the same
         "no-sequences": 2, // disallow use of the comma operator
         "no-throw-literal": 2, // restrict what can be thrown as an exception
+        "no-unmodified-loop-condition": 2, // disallow unmodified conditions of loops
         "no-unused-expressions": 2, // disallow usage of expressions in statement position
         "no-useless-call": 2, // disallow unnecessary .call() and .apply()
         "no-useless-concat": 2, // disallow unnecessary concatenation of literals or template literals
@@ -124,7 +127,8 @@ module.exports = {
         "no-new-require": 2, // disallow use of new operator with the require function
         "no-path-concat": 2, // disallow string concatenation with __dirname and __filename
         "no-process-exit": 2, // disallow process.exit()
-        "no-restricted-modules": 2, // restrict usage of specified node modules
+        "no-restricted-imports": 0, // restrict usage of specified node imports
+        "no-restricted-modules": 0, // restrict usage of specified node modules
         "no-sync": 2, // disallow use of synchronous methods
 
         // stylictic issues
@@ -141,6 +145,7 @@ module.exports = {
         "func-style": [1, "declaration"], // enforce use of function declarations or expressions
         "id-length": 0, // this option enforces minimum and maximum identifier lengths (variable names, property names etc.)
         "id-match": 2, // require identifiers to match the provided regular expression
+        "id-blacklist": 0, // blacklist certain identifiers to prevent them being used
         "indent": 1, // specify tab or space width for your code
         "jsx-quotes": 2, // specify whether double or single quotes should be used in JSX attributes
         "key-spacing": 2, // enforce spacing between keys and values in object literal properties
@@ -174,6 +179,7 @@ module.exports = {
         "no-unneeded-ternary": 2, // disallow the use of ternary operators when a simpler alternative exists
         "object-curly-spacing": 2, // require or disallow padding inside curly braces
         "one-var": 0, // require or disallow one variable declaration per function
+        "one-var-declaration-per-line": 2, // require or disallow an newline around variable declarations
         "operator-assignment": 2, // require assignment operator shorthand where possible or prohibit it entirely
         "operator-linebreak": 2, // enforce operators to be placed before or after line breaks
         "padded-blocks": 0, // enforce padding within blocks
@@ -207,8 +213,10 @@ module.exports = {
         "prefer-arrow-callback": 2, // suggest using arrow functions as callbacks
         "prefer-const": 2, // suggest using const declaration for variables that are never modified after declared
         "prefer-reflect": 0, // suggest using Reflect methods where applicable
+        "prefer-rest-params": 2, // suggest using the rest parameters instead of arguments
         "prefer-spread": 2, // suggest using the spread operator instead of .apply().
         "prefer-template": 2, // suggest using template literals instead of strings concatenation
-        "require-yield": 2 // disallow generator functions that do not have yield
+        "require-yield": 2, // disallow generator functions that do not have yield
+        "yield-star-spacing": 2 // enforce spacing around the * in yield* expressions
     }
 };
