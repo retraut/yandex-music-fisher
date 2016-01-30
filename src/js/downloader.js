@@ -116,7 +116,12 @@ downloader.download = async() => {
             writer.setFrame('USLT', entity.lyrics);
         }
         if (coverBuffer) {
-            writer.setFrame('APIC', coverBuffer);
+            try {
+                writer.setFrame('APIC', coverBuffer);
+            } catch (e) {
+                // пример https://music.yandex.ru/album/99853/track/879704 при обложке 200х200
+                console.error(e, entity);
+            }
         }
         writer.addTag();
 
