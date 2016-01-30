@@ -137,8 +137,8 @@ downloader.download = async() => {
             try {
                 coverBuffer = await fisher.utils.fetchBuffer(coverUrl);
             } catch (e) {
-                if (e !== '404 (Not found)') {
-                    onInterruptEntity(e);
+                if (e.message !== '404 (Not found)') {
+                    onInterruptEntity(e.message);
                     return;
                 }
             }
@@ -149,7 +149,7 @@ downloader.download = async() => {
 
             await saveTrack(buffer);
         } catch (e) {
-            onInterruptEntity(e);
+            onInterruptEntity(e.message);
         }
     } else if (entity.type === downloader.TYPE.COVER) {
         let buffer;
@@ -157,8 +157,8 @@ downloader.download = async() => {
         try {
             buffer = await fisher.utils.fetchBuffer(entity.url, onProgress);
         } catch (e) {
-            if (e !== '404 (Not found)') {
-                onInterruptEntity(e);
+            if (e.message !== '404 (Not found)') {
+                onInterruptEntity(e.message);
                 return;
             }
         }
