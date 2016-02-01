@@ -45,10 +45,10 @@ function post(postUrl, type, data) {
 function createGithubRelease() {
     const releasesUrl = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases';
     const data = JSON.stringify({
-        "tag_name": `v${manifest.version}`,
-        "target_commitish": "master",
-        "name": manifest.version,
-        "draft": true
+        tag_name: `v${manifest.version}`,
+        target_commitish: "master",
+        name: manifest.version,
+        draft: true
     });
 
     return post(releasesUrl, 'application/json', data);

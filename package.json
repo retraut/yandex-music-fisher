@@ -10,7 +10,8 @@
     "increment-version-minor": "node utils/increment_version.js --version=minor",
     "increment-version-patch": "node utils/increment_version.js --version=patch",
     "make-dist": "npm run build && node utils/make_dist.js",
-    "release": "node utils/release.js"
+    "release": "node utils/release.js",
+    "show-download-stats": "node utils/show_download_stats.js"
   },
   "repository": {
     "type": "git",

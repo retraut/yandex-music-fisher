@@ -10,8 +10,7 @@ module.exports = {
 
         // helpers
         cover_sizes: './src/helpers/cover_sizes.js',
-        get_track_page_url: './src/helpers/get_track_page_url.js',
-        show_download_stats: './src/helpers/show_download_stats.js'
+        get_track_page_url: './src/helpers/get_track_page_url.js'
     },
     output: {
         path: path.join(__dirname, 'src', 'bundle'),
