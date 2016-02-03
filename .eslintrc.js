@@ -57,12 +57,12 @@ module.exports = {
         "no-case-declarations": 2, // disallow lexical declarations in case clauses
         "no-div-regex": 2, // disallow division operators explicitly at beginning of regular expression
         "no-else-return": 2, // disallow else after a return in an if
-        "no-empty-label": 2, // disallow use of labels for anything other than loops and switches
         "no-empty-pattern": 2, // disallow use of empty destructuring patterns
         "no-eq-null": 2, // disallow comparisons to null without a type-checking operator
         "no-eval": 2, // disallow use of eval()
         "no-extend-native": 2, // disallow adding to native types
         "no-extra-bind": 2, // disallow unnecessary function binding
+        "no-extra-label": 2, // disallow unnecessary labels
         "no-fallthrough": 2, // disallow fallthrough of case statements
         "no-floating-decimal": 2, // disallow the use of leading or trailing decimal points in numeric literals
         "no-implicit-coercion": 2, // disallow the type conversions with shorter notations
@@ -88,11 +88,13 @@ module.exports = {
         "no-redeclare": 2, // disallow declaring the same variable more than once
         "no-return-assign": 2, // disallow use of assignment in return statement
         "no-script-url": 2, // disallow use of javascript: urls
+        "no-self-assign": 2, // disallow assignments where both sides are exactly the same
         "no-self-compare": 2, // disallow comparisons where both sides are exactly the same
         "no-sequences": 2, // disallow use of the comma operator
         "no-throw-literal": 2, // restrict what can be thrown as an exception
         "no-unmodified-loop-condition": 2, // disallow unmodified conditions of loops
         "no-unused-expressions": 2, // disallow usage of expressions in statement position
+        "no-unused-labels": 2, // disallow unused labels
         "no-useless-call": 2, // disallow unnecessary .call() and .apply()
         "no-useless-concat": 2, // disallow unnecessary concatenation of literals or template literals
         "no-void": 2, // disallow use of the void operator
@@ -160,6 +162,7 @@ module.exports = {
         "new-cap": 2, // require a capital letter for constructors
         "new-parens": 2, // disallow the omission of parentheses when invoking a constructor with no arguments
         "newline-after-var": 2, // require or disallow an empty newline after variable declarations
+        "newline-per-chained-call": 0, // enforce newline after each call when chaining the calls
         "no-array-constructor": 2, // disallow use of the Array constructor
         "no-bitwise": 2, // disallow use of bitwise operators
         "no-continue": 2, // disallow use of the continue statement
@@ -217,6 +220,7 @@ module.exports = {
         "prefer-spread": 2, // suggest using the spread operator instead of .apply().
         "prefer-template": 2, // suggest using template literals instead of strings concatenation
         "require-yield": 2, // disallow generator functions that do not have yield
+        "template-curly-spacing": 2, // enforce spacing around embedded expressions of template strings
         "yield-star-spacing": 2 // enforce spacing around the * in yield* expressions
     }
 };
