@@ -1,4 +1,4 @@
-/* global fisher, ga */
+/* global ga */
 
 require('../vendor/ga');
 
@@ -7,10 +7,11 @@ const yandex = require('./yandex');
 const storage = require('./storage');
 const downloader = require('./downloader');
 const version = chrome.runtime.getManifest().version;
+const fisher = {utils, yandex, storage, downloader};
 
 let distributionUrl;
 
-window.fisher = {utils, yandex, storage, downloader};
+window.fisher = fisher;
 
 fisher.openHelpersPage = function () {
     chrome.tabs.create({
