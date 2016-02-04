@@ -54,6 +54,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 chrome.tabs.onActivated.addListener((activeInfo) => { // переключение вкладки
     chrome.tabs.get(activeInfo.tabId, (tab) => {
+        if ('lastError' in chrome.runtime) {
+            console.error(chrome.runtime.lastError.message);
+            return;
+        }
         fisher.utils.updateTabIcon(tab);
     });
 });
