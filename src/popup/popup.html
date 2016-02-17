@@ -10,23 +10,28 @@
 </head>
 <body>
 <div class="btn-toolbar">
-    <div class="btn-group">
-        <button type="button" class="btn btn-default active" id="addBtn">
-            <i class="glyphicon glyphicon-plus"></i> Добавление
-        </button>
-        <button type="button" class="btn btn-default disabled" id="downloadBtn">
-            <i class="glyphicon glyphicon-save"></i> Загрузки
-        </button>
+    <div class="pull-left">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-default active" id="addBtn">
+                <i class="glyphicon glyphicon-save"></i> Скачать
+            </button>
+            <button type="button" class="btn btn-sm btn-default disabled" id="downloadBtn">
+                <i class="glyphicon glyphicon-saved"></i> Загрузки
+            </button>
+        </div>
     </div>
 
-    <div class="btn-group controls">
-        <button type="button" class="btn btn-default" id="settingsBtn" title="Открыть настройки">
-            <i class="glyphicon glyphicon-cog"></i>
-        </button>
-        <button type="button" class="btn btn-default" id="downloadFolderBtn" title="Открыть папку загрузок">
-            <i class="glyphicon glyphicon-folder-open"></i>
-        </button>
+    <div class="pull-right">
+        <div class="btn-group controls">
+            <button type="button" class="btn btn-sm btn-default" id="downloadFolderBtn" title="Открыть папку загрузок">
+                <i class="glyphicon glyphicon-folder-open"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-default" id="settingsBtn" title="Открыть настройки">
+                <i class="glyphicon glyphicon-cog"></i>
+            </button>
+        </div>
     </div>
+    <div class="clearfix"></div>
 </div>
 
 <div id="preloader">
@@ -34,18 +39,23 @@
 </div>
 
 <div id="addContainer" class="hidden">
-    <div class="text-center"><strong id="name"></strong></div>
-    <div class="text-center" id="info"></div>
-    <button id="downloadTop10Tracks" type="button" class="btn btn-success btn-sm hidden">
-        <i class="glyphicon glyphicon-star"></i> Скачать 10 лучших треков
-    </button>
-    <div id="albums"></div>
-    <div id="compilations"></div>
-    <br>
+    <div class="pull-left text-container">
+        <div class="name-container"><strong id="name"></strong></div>
+        <div class="info-container" id="info"></div>
 
-    <button id="startDownloadBtn" type="button" class="btn btn-success">
-        <i class="glyphicon glyphicon-save"></i> Скачать
-    </button>
+        <button id="downloadTop10Tracks" type="button" class="btn btn-sm btn-success btn-sm hidden">
+            <i class="glyphicon glyphicon-star"></i> Скачать 10 лучших треков
+        </button>
+
+        <div id="albums"></div>
+        <div id="compilations"></div>
+    </div>
+    <div class="pull-right download-container">
+        <button id="startDownloadBtn" type="button" class="btn btn-xs btn-primary pull-right">
+            <i class="glyphicon glyphicon-save"></i> Скачать
+        </button>
+    </div>
+    <div class="clearfix"></div>
 </div>
 
 <div id="downloadContainer" class="hidden"></div>

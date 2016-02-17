@@ -1,5 +1,6 @@
 body {
-    width: 348px;
+    width: 420px;
+    padding: 18px
 }
 
 label {
@@ -10,6 +11,10 @@ label {
 
 input[type=checkbox] {
     margin-right: 5px;
+}
+
+.btn, .btn:active, .btn:hover {
+    outline: none!important;
 }
 
 .btn-xs {
@@ -40,20 +45,32 @@ input[type=checkbox] {
     font-size: 14px;
 }
 
+.text-container {
+    width: 80%;
+    text-align: left;
+}
+
+.download-container {
+    width: 20%;
+    text-align: right;
+}
+
 #preloader > img {
     margin: 25px 142px;
 }
 
 #addContainer {
-    padding: 10px 8px;
+    margin-top: 18px;
+    padding: 10px 0;
 }
 
-#albums, #compilations {
+#compilations {
     margin-top: 10px;
+    margin-bottom: 18px;
 }
 
 #errorContainer, #downloadContainer {
-    padding: 10px;
+    padding: 10px 0;
 }
 
 #downloadContainer {
