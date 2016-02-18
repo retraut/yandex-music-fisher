@@ -62,14 +62,16 @@ function generateListView(entity) {
     let view = '<div class="panel panel-default">';
 
     view += '<div class="panel-heading">';
-    view += `${name}<br>`;
-    view += `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
+    view +=     `${name}<br>`;
+    view +=     `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
     view += '</div>';
     view += '<div class="panel-body">';
-    view += status;
-    view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
-    view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
+    view +=     status;
+    view +=     `<button type="button" class="btn btn-xs btn-danger remove-btn" data-id="${entity.index}">`;
+    view +=         `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i>`
+    view +=     `</button>`;
     view += '</div>';
+
     view += '</div>';
     return view;
 }
@@ -116,8 +118,11 @@ function updateDownloader() {
     let content = '';
 
     if (!downloads.size) {
-        content += 'Загрузок нет.<br><br>';
-        content += 'Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка';
+        content += '<div class="alert alert-info alert-empty-downloads">';
+        content += '<strong>Загрузок нет</strong>';
+        content += '<br /><br />';
+        content += '<p>Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка</p>';
+        content += '</div>';
     }
     downloads.forEach((entity) => {
         const isAlbum = entity.type === backgroundPage.fisher.downloader.TYPE.ALBUM;
@@ -294,23 +299,37 @@ function generateDownloadArtist(artist) {
 
     if (sortedAlbums.length) {
         const name = `Альбомы (${sortedAlbums.length})`;
-
-        albumContent += `<label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label><br>`;
+        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label></h4>`;
     }
     let year = 0;
 
+    albumContent += `<div class="panel panel-default panel-albums">`;
     sortedAlbums.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            albumContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
+            albumContent += `<div class="panel-heading">`;
+            albumContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
+            albumContent += `</div>`
         }
         let title = `[${album.trackCount}] ${album.title}`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
-        albumContent += `<label><input type="checkbox" class="album" checked value="${album.id}">${title}</label><br>`;
+
+        albumContent += `<div class="panel-body">`;
+        albumContent += `   <label><input type="checkbox" class="album" checked value="${album.id}">`;
+
+        if (album.coverUri) {
+            let coverUrl = `https://${album.coverUri.replace('%%', '30x30')}`
+            albumContent += `<span class="cover"><img src="${coverUrl}"></span>`;
+        }
+
+        albumContent += `       <span class="title">${title}</span>`;
+        albumContent += `   </label>`;
+        albumContent += `</div>`;
     });
+    albumContent += `</div>`;
 
     artist.alsoAlbums.forEach((album, i) => {
         if (!('year' in album)) { // пример https://music.yandex.ru/artist/64248
@@ -319,24 +338,41 @@ function generateDownloadArtist(artist) {
     });
     const sortedCompilations = artist.alsoAlbums.sort((a, b) => b.year - a.year);
 
+    compilationContent += `<div class="panel panel-default panel-compilations">`;
     if (sortedCompilations.length) {
         const name = `Сборники (${sortedCompilations.length})`;
-
-        compilationContent += `<br><label><input type="checkbox" id="compilationCheckbox"><b>${name}</b></label><br>`;
+        compilationContent += `<h4 class="compilations"><label><input type="checkbox" id="compilationCheckbox" checked><b>${name}</b></label></h4>`;
     }
     year = 0;
     sortedCompilations.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            compilationContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
+            compilationContent += `<div class="panel-heading">`;
+            compilationContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
+            compilationContent += `</div>`
         }
+
         let title = `[${album.trackCount}] ${album.title}`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
-        compilationContent += `<label><input type="checkbox" class="compilation" value="${album.id}">${title}</label><br>`;
+
+        compilationContent += `<div class="panel-body">`;
+        compilationContent += `   <label><input type="checkbox" class="compilation" checked value="${album.id}">`;
+
+        if (album.coverUri) {
+            let coverUrl = `https://${album.coverUri.replace('%%', '30x30')}`
+            compilationContent += `<span class="cover"><img src="${coverUrl}"></span>`;
+        }
+
+        compilationContent += `       <span class="title">${title}</span>`;
+        compilationContent += `   </label>`;
+        compilationContent += `</div>`;
+
     });
+    compilationContent += `</div>`;
+
     $('name').innerText = artist.artist.name;
     $('info').innerText = 'Дискография';
     $('albums').innerHTML = albumContent;
