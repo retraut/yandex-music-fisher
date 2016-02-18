@@ -110,3 +110,9 @@ h4.albums, h4.compilations {
     margin-right: 4px;
 }
 
+button.remove-btn,
+button.restore-btn {
+    display: block;
+    float: right;
+}
+

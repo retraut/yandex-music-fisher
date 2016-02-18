@@ -62,14 +62,16 @@ function generateListView(entity) {
     let view = '<div class="panel panel-default">';
 
     view += '<div class="panel-heading">';
-    view += `${name}<br>`;
-    view += `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
+    view +=     `${name}<br>`;
+    view +=     `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
     view += '</div>';
     view += '<div class="panel-body">';
-    view += status;
-    view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
-    view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
+    view +=     status;
+    view +=     `<button type="button" class="btn btn-xs btn-danger remove-btn" data-id="${entity.index}">`;
+    view +=         `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i>`
+    view +=     `</button>`;
     view += '</div>';
+
     view += '</div>';
     return view;
 }
@@ -119,7 +121,7 @@ function updateDownloader() {
         content += '<div class="alert alert-info alert-empty-downloads">';
         content += '<strong>Загрузок нет</strong>';
         content += '<br /><br />';
-        content += 'Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка';
+        content += '<p>Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка</p>';
         content += '</div>';
     }
     downloads.forEach((entity) => {
