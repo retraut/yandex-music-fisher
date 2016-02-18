@@ -1,5 +1,5 @@
 body {
-    width: 420px;
+    width: 640px;
     padding: 18px
 }
 
@@ -11,6 +11,11 @@ label {
 
 input[type=checkbox] {
     margin-right: 5px;
+}
+
+h4.albums, h4.compilations {
+    margin-bottom: 18px;
+    margin-left: 9px;
 }
 
 .btn, .btn:active, .btn:hover {
@@ -46,31 +51,28 @@ input[type=checkbox] {
 }
 
 .text-container {
-    width: 80%;
     text-align: left;
 }
 
+.artist-container, .download-container {
+    text-align: center;
+}
+
 .download-container {
-    width: 20%;
-    text-align: right;
+    margin-top: 18px;
 }
 
 #preloader > img {
-    margin: 25px 142px;
+    display: block;
+    margin: 25px auto;
 }
 
 #addContainer {
     margin-top: 18px;
-    padding: 10px 0;
 }
 
 #compilations {
     margin-top: 10px;
-    margin-bottom: 18px;
-}
-
-#errorContainer, #downloadContainer {
-    padding: 10px 0;
 }
 
 #downloadContainer {
@@ -78,7 +80,33 @@ input[type=checkbox] {
     font-size: 12px;
 }
 
-#startDownloadBtn, #downloadTop10Tracks {
-    display: block;
-    margin: 0 auto;
+.alert-empty-downloads {
+    margin-bottom: 0;
 }
+
+.alert-empty-downloads strong {
+    text-align: center;
+}
+
+#startDownloadBtn {
+    display: inline-block;
+}
+
+#downloadTop10Tracks {
+    display: block;
+    margin: 18px auto;
+}
+
+#albums {
+    margin-top: 18px;
+}
+
+.panel-compilations {
+    margin-top: 18px;
+}
+
+.panel-albums .cover,
+.panel-compilations .cover {
+    margin-right: 4px;
+}
+

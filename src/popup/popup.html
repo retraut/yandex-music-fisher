@@ -12,10 +12,10 @@
 <div class="btn-toolbar">
     <div class="pull-left">
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-default active" id="addBtn">
+            <button type="button" class="btn btn-sm btn-primary active" id="addBtn">
                 <i class="glyphicon glyphicon-save"></i> Скачать
             </button>
-            <button type="button" class="btn btn-sm btn-default disabled" id="downloadBtn">
+            <button type="button" class="btn btn-sm btn-primary disabled" id="downloadBtn">
                 <i class="glyphicon glyphicon-saved"></i> Загрузки
             </button>
         </div>
@@ -23,10 +23,10 @@
 
     <div class="pull-right">
         <div class="btn-group controls">
-            <button type="button" class="btn btn-sm btn-default" id="downloadFolderBtn" title="Открыть папку загрузок">
+            <button type="button" class="btn btn-sm btn-primary" id="downloadFolderBtn" title="Открыть папку загрузок">
                 <i class="glyphicon glyphicon-folder-open"></i>
             </button>
-            <button type="button" class="btn btn-sm btn-default" id="settingsBtn" title="Открыть настройки">
+            <button type="button" class="btn btn-sm btn-primary" id="settingsBtn" title="Открыть настройки">
                 <i class="glyphicon glyphicon-cog"></i>
             </button>
         </div>
@@ -39,9 +39,11 @@
 </div>
 
 <div id="addContainer" class="hidden">
-    <div class="pull-left text-container">
-        <div class="name-container"><strong id="name"></strong></div>
-        <div class="info-container" id="info"></div>
+    <div class="text-container">
+        <div class="artist-container">
+            <h3 id="name"></h3>
+            <p id="info"></p>
+        </div>
 
         <button id="downloadTop10Tracks" type="button" class="btn btn-sm btn-success btn-sm hidden">
             <i class="glyphicon glyphicon-star"></i> Скачать 10 лучших треков
@@ -50,8 +52,8 @@
         <div id="albums"></div>
         <div id="compilations"></div>
     </div>
-    <div class="pull-right download-container">
-        <button id="startDownloadBtn" type="button" class="btn btn-xs btn-primary pull-right">
+    <div class="download-container">
+        <button id="startDownloadBtn" type="button" class="btn btn-sm btn-success" title="Скачать">
             <i class="glyphicon glyphicon-save"></i> Скачать
         </button>
     </div>
@@ -60,7 +62,7 @@
 
 <div id="downloadContainer" class="hidden"></div>
 
-<div id="errorContainer" class="hidden">
+<div id="errorContainer" class="alert alert-warning hidden">
     Ошибка. Попробуйте позже. Возможно вас заблокировал Яндекс -
     вам нужно ввести капчу на любой странице Яндекс.Музыки.
 </div>
