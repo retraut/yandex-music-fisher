@@ -1,15 +1,23 @@
 body {
-    width: 348px;
+    width: 640px;
+    padding: 18px
 }
 
 label {
-    display: inline;
     font-weight: normal;
-    cursor: pointer;
 }
 
 input[type=checkbox] {
     margin-right: 5px;
+}
+
+h4.albums, h4.compilations {
+    margin-bottom: 18px;
+    margin-left: 10px;
+}
+
+.btn, .btn:active, .btn:hover {
+    outline: none!important;
 }
 
 .btn-xs {
@@ -40,20 +48,29 @@ input[type=checkbox] {
     font-size: 14px;
 }
 
+.text-container {
+    text-align: left;
+}
+
+.artist-container, .download-container {
+    text-align: center;
+}
+
+.download-container {
+    margin-top: 18px;
+}
+
 #preloader > img {
-    margin: 25px 142px;
+    display: block;
+    margin: 25px auto;
 }
 
 #addContainer {
-    padding: 10px 8px;
+    margin-top: 18px;
 }
 
-#albums, #compilations {
-    margin-top: 10px;
-}
-
-#errorContainer, #downloadContainer {
-    padding: 10px;
+#compilations {
+    margin-top: 50px;
 }
 
 #downloadContainer {
@@ -61,7 +78,61 @@ input[type=checkbox] {
     font-size: 12px;
 }
 
-#startDownloadBtn, #downloadTop10Tracks {
-    display: block;
-    margin: 0 auto;
+.alert-empty-downloads {
+    margin-bottom: 0;
 }
+
+.alert-empty-downloads strong {
+    text-align: center;
+}
+
+#startDownloadBtn {
+    display: inline-block;
+}
+
+#downloadTop10Tracks {
+    display: block;
+    margin: 18px auto;
+}
+
+#albums {
+    margin-top: 18px;
+}
+
+.panel-albums .media,
+.panel-compilations .media {
+    margin: 9px 0;
+}
+
+.panel-albums .panel-body,
+.panel-compilations .panel-body {
+    padding: 5px 0 0 0;
+}
+
+.panel-albums .panel-body label,
+.panel-compilations .panel-body label {
+    padding: 0 10px;
+}
+
+.panel-albums .panel-body label:hover,
+.panel-compilations .panel-body label:hover {
+    background-color: #F5F5F5;
+}
+
+.panel-compilations {
+    margin-top: 18px;
+}
+
+input[type=checkbox].media-checkbox {
+    display: block;
+    float: left;
+    margin-top: 21px;
+    margin-right: 11px;
+}
+
+button.remove-btn,
+button.restore-btn {
+    display: block;
+    float: right;
+}
+

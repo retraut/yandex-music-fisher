@@ -62,14 +62,16 @@ function generateListView(entity) {
     let view = '<div class="panel panel-default">';
 
     view += '<div class="panel-heading">';
-    view += `${name}<br>`;
-    view += `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
+    view +=     `${name}<br>`;
+    view +=     `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
     view += '</div>';
     view += '<div class="panel-body">';
-    view += status;
-    view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
-    view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
+    view +=     status;
+    view +=     `<button type="button" class="btn btn-xs btn-danger remove-btn" data-id="${entity.index}">`;
+    view +=         `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i>`
+    view +=     `</button>`;
     view += '</div>';
+
     view += '</div>';
     return view;
 }
@@ -116,8 +118,11 @@ function updateDownloader() {
     let content = '';
 
     if (!downloads.size) {
-        content += 'Загрузок нет.<br><br>';
-        content += 'Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка';
+        content += '<div class="alert alert-info alert-empty-downloads">';
+        content += '<strong>Загрузок нет</strong>';
+        content += '<br /><br />';
+        content += '<p>Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка</p>';
+        content += '</div>';
     }
     downloads.forEach((entity) => {
         const isAlbum = entity.type === backgroundPage.fisher.downloader.TYPE.ALBUM;
@@ -294,23 +299,44 @@ function generateDownloadArtist(artist) {
 
     if (sortedAlbums.length) {
         const name = `Альбомы (${sortedAlbums.length})`;
-
-        albumContent += `<label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label><br>`;
+        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label></h4>`;
     }
     let year = 0;
 
+    albumContent += `<div class="panel panel-default panel-albums">`;
     sortedAlbums.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            albumContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
+            albumContent += `<div class="panel-heading">`;
+            albumContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
+            albumContent += `</div>`
         }
         let title = `[${album.trackCount}] ${album.title}`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
-        albumContent += `<label><input type="checkbox" class="album" checked value="${album.id}">${title}</label><br>`;
+
+        let coverUrl = (album.coverUri)
+            ? `https://${album.coverUri.replace('%%', '70x70')}`
+            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
+        ;
+
+        albumContent += `<div class="panel-body">`;
+        albumContent += `   <label>`;
+        albumContent += `       <input type="checkbox" class="album media-checkbox" checked value="${album.id}">`;
+        albumContent += `       <div class="media">`;
+        albumContent += `           <div class="media-left">`;
+        albumContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
+        albumContent += `           </div>`;
+        albumContent += `           <div class="media-body">`;
+        albumContent += `               ${title}`;
+        albumContent += `           </div>`;
+        albumContent += `       </div>`;
+        albumContent += `   </label>`;
+        albumContent += `</div>`;
     });
+    albumContent += `</div>`;
 
     artist.alsoAlbums.forEach((album, i) => {
         if (!('year' in album)) { // пример https://music.yandex.ru/artist/64248
@@ -319,24 +345,48 @@ function generateDownloadArtist(artist) {
     });
     const sortedCompilations = artist.alsoAlbums.sort((a, b) => b.year - a.year);
 
+    compilationContent += `<div class="panel panel-default panel-compilations">`;
     if (sortedCompilations.length) {
         const name = `Сборники (${sortedCompilations.length})`;
-
-        compilationContent += `<br><label><input type="checkbox" id="compilationCheckbox"><b>${name}</b></label><br>`;
+        compilationContent += `<h4 class="compilations"><label><input type="checkbox" id="compilationCheckbox" checked><b>${name}</b></label></h4>`;
     }
     year = 0;
     sortedCompilations.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            compilationContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
+            compilationContent += `<div class="panel-heading">`;
+            compilationContent += `     <label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
+            compilationContent += `</div>`
         }
+
         let title = `[${album.trackCount}] ${album.title}`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
-        compilationContent += `<label><input type="checkbox" class="compilation" value="${album.id}">${title}</label><br>`;
+
+        let coverUrl = (album.coverUri)
+            ? `https://${album.coverUri.replace('%%', '70x70')}`
+            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
+        ;
+
+        compilationContent += `<div class="panel-body">`;
+        compilationContent += `   <label>`;
+        compilationContent += `       <input type="checkbox" class="compilation media-checkbox" checked value="${album.id}">`;
+        compilationContent += `       <div class="media">`;
+        compilationContent += `           <div class="media-left">`;
+        compilationContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
+        compilationContent += `           </div>`;
+        compilationContent += `           <div class="media-body">`;
+        compilationContent += `               ${title}`;
+        compilationContent += `           </div>`;
+        compilationContent += `       </div>`;
+        compilationContent += `   </label>`;
+        compilationContent += `</div>`;
+
     });
+    compilationContent += `</div>`;
+
     $('name').innerText = artist.artist.name;
     $('info').innerText = 'Дискография';
     $('albums').innerHTML = albumContent;
@@ -377,27 +427,48 @@ function generateDownloadLabel(label) {
 
     if (sortedAlbums.length) {
         const name = `Альбомы (${sortedAlbums.length})`;
-
-        albumContent += `<label><input type="checkbox" id="albumCheckbox"><b>${name}</b></label><br>`;
+        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label></h4>`;
     }
     let year = 0;
 
+    albumContent += `<div class="panel panel-default panel-albums">`;
     sortedAlbums.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            albumContent += `<br><label class="label-year">${year === 0 ? 'Год не указан' : year}</label><br>`;
+            albumContent += `<div class="panel-heading">`;
+            albumContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
+            albumContent += `</div>`
         }
         const artists = backgroundPage.fisher.utils.parseArtists(album.artists).artists.join(', ');
 
-        let title = album.title;
+        let title = `${album.title}`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
+
+        let coverUrl = (album.coverUri)
+            ? `https://${album.coverUri.replace('%%', '70x70')}`
+            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
+        ;
+
         const name = `[${album.trackCount}] ${artists} - ${title}`;
 
-        albumContent += `<label><input type="checkbox" class="album" value="${album.id}">${name}</label><br>`;
+        albumContent += `<div class="panel-body">`;
+        albumContent += `   <label>`;
+        albumContent += `       <input type="checkbox" class="album media-checkbox" checked value="${album.id}">`;
+        albumContent += `       <div class="media">`;
+        albumContent += `           <div class="media-left">`;
+        albumContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
+        albumContent += `           </div>`;
+        albumContent += `           <div class="media-body">`;
+        albumContent += `               ${name}`;
+        albumContent += `           </div>`;
+        albumContent += `       </div>`;
+        albumContent += `   </label>`;
+        albumContent += `</div>`;
     });
+    albumContent += `</div>`;
 
     $('name').innerText = label.label.name;
     $('info').innerText = 'Лейбл';
