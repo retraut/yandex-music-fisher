@@ -4,9 +4,7 @@ body {
 }
 
 label {
-    display: inline;
     font-weight: normal;
-    cursor: pointer;
 }
 
 input[type=checkbox] {
@@ -15,7 +13,7 @@ input[type=checkbox] {
 
 h4.albums, h4.compilations {
     margin-bottom: 18px;
-    margin-left: 9px;
+    margin-left: 10px;
 }
 
 .btn, .btn:active, .btn:hover {
@@ -72,7 +70,7 @@ h4.albums, h4.compilations {
 }
 
 #compilations {
-    margin-top: 10px;
+    margin-top: 50px;
 }
 
 #downloadContainer {
@@ -101,13 +99,35 @@ h4.albums, h4.compilations {
     margin-top: 18px;
 }
 
+.panel-albums .media,
+.panel-compilations .media {
+    margin: 9px 0;
+}
+
+.panel-albums .panel-body,
+.panel-compilations .panel-body {
+    padding: 5px 0 0 0;
+}
+
+.panel-albums .panel-body label,
+.panel-compilations .panel-body label {
+    padding: 0 10px;
+}
+
+.panel-albums .panel-body label:hover,
+.panel-compilations .panel-body label:hover {
+    background-color: #F5F5F5;
+}
+
 .panel-compilations {
     margin-top: 18px;
 }
 
-.panel-albums .cover,
-.panel-compilations .cover {
-    margin-right: 4px;
+input[type=checkbox].media-checkbox {
+    display: block;
+    float: left;
+    margin-top: 21px;
+    margin-right: 11px;
 }
 
 button.remove-btn,
