@@ -1,6 +1,7 @@
 body {
     width: 640px;
-    padding: 18px
+    padding: 18px;
+    font-size: 12px;
 }
 
 label {
@@ -17,7 +18,7 @@ h4.albums, h4.compilations {
 }
 
 .btn, .btn:active, .btn:hover {
-    outline: none!important;
+    outline: none !important;
 }
 
 .btn-xs {
@@ -37,8 +38,13 @@ h4.albums, h4.compilations {
     padding: 5px 10px;
 }
 
-.btn-toolbar > .btn-group.controls {
-    margin-left: 44px;
+.btn-toolbar {
+    margin-left: 0;
+    margin-bottom: 20px;
+}
+
+.label {
+    font-size: 10.5px;
 }
 
 .label-year {
@@ -65,17 +71,8 @@ h4.albums, h4.compilations {
     margin: 25px auto;
 }
 
-#addContainer {
-    margin-top: 18px;
-}
-
 #compilations {
     margin-top: 50px;
-}
-
-#downloadContainer {
-    padding-top: 20px;
-    font-size: 12px;
 }
 
 .alert-empty-downloads {
@@ -134,5 +131,6 @@ button.remove-btn,
 button.restore-btn {
     display: block;
     float: right;
+    margin-left: 5px;
 }
 

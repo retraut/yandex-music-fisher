@@ -48,9 +48,7 @@ function generateListView(entity) {
     if (isLoading) {
         status = `<span class="text-primary">Загрузка [${loadedTrackSizeStr} из ${totalTrackSizeStr}]</span>`;
     } else if (isInterrupted) {
-        status = `<span class="text-danger">Ошибка [скачано ${loadedTrackSizeStr} из ${totalTrackSizeStr}]</span> `;
-        status += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
-        status += `<i class="glyphicon glyphicon-repeat restore-btn" data-id="${entity.index}"></i></button>`;
+        status = `<span class="text-danger">Ошибка [скачано ${loadedTrackSizeStr} из ${totalTrackSizeStr}]</span>`;
     } else if (isFinished) {
         status = `<span class="text-success">Сохранён [${totalTrackSizeStr}]</span>`;
     } else if (isWaiting) {
@@ -62,17 +60,23 @@ function generateListView(entity) {
     let view = '<div class="panel panel-default">';
 
     view += '<div class="panel-heading">';
-    view +=     `${name}<br>`;
-    view +=     `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
+    view += `${name}<br>`;
+    view += `Скачано треков ${loadedTrackCount} из ${totalTrackCount} (${loadedSizePercent}%)`;
     view += '</div>';
     view += '<div class="panel-body">';
-    view +=     status;
-    view +=     `<button type="button" class="btn btn-xs btn-danger remove-btn" data-id="${entity.index}">`;
-    view +=         `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i>`
-    view +=     `</button>`;
-    view += '</div>';
+    view += status;
+    view += `<button type="button" class="btn btn-xs btn-danger remove-btn" data-id="${entity.index}">`;
+    view += `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i>`;
+    view += '</button>';
+
+    if (isInterrupted) {
+        view += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
+        view += `<i class="glyphicon glyphicon-repeat" data-id="${entity.index}"></i></button>`;
+    }
 
     view += '</div>';
+    view += '</div>';
+
     return view;
 }
 
@@ -93,9 +97,7 @@ function generateTrackView(entity) {
     } else if (isFinished) {
         status = `<span class="text-success">Сохранён [${totalSize}]</span>`;
     } else if (isInterrupted) {
-        status = `<span class="text-danger">Ошибка [скачано ${loadedSize} из ${totalSize}]</span> `;
-        status += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
-        status += `<i class="glyphicon glyphicon-repeat restore-btn" data-id="${entity.index}"></i></button>`;
+        status = `<span class="text-danger">Ошибка [скачано ${loadedSize} из ${totalSize}]</span>`;
     }
 
     let view = '<div class="panel panel-default">';
@@ -105,8 +107,14 @@ function generateTrackView(entity) {
     view += '</div>';
     view += '<div class="panel-body">';
     view += status;
-    view += ` <button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
-    view += `<i class="glyphicon glyphicon-remove remove-btn" data-id="${entity.index}"></i></button>`;
+    view += `<button type="button" class="btn btn-danger btn-xs remove-btn" data-id="${entity.index}">`;
+    view += `<i class="glyphicon glyphicon-remove" data-id="${entity.index}"></i></button>`;
+
+    if (isInterrupted) {
+        view += `<button type="button" class="btn btn-info btn-xs restore-btn" data-id="${entity.index}">`;
+        view += `<i class="glyphicon glyphicon-repeat" data-id="${entity.index}"></i></button>`;
+    }
+
     view += '</div>';
     view += '</div>';
     return view;
@@ -121,7 +129,7 @@ function updateDownloader() {
         content += '<div class="alert alert-info alert-empty-downloads">';
         content += '<strong>Загрузок нет</strong>';
         content += '<br /><br />';
-        content += '<p>Для добавления перейдите на страницу трека, альбома, плейлиста или исполнителя на сервисе Яндекс.Музыка</p>';
+        content += '<p>Чтобы скачать музыку перейдите на сервис Яндекс.Музыка или Яндекс.Радио</p>';
         content += '</div>';
     }
     downloads.forEach((entity) => {
@@ -167,8 +175,8 @@ $('settingsBtn').addEventListener('click', () => chrome.runtime.openOptionsPage(
 
 $('downloadContainer').addEventListener('mousedown', (e) => {
     const downloads = backgroundPage.fisher.downloader.downloads;
-    const isRemoveBtnClick = e.target.classList.contains('remove-btn');
-    const isRestoreBtnClick = e.target.classList.contains('restore-btn');
+    const isRemoveBtnClick = e.target.classList.contains('remove-btn') || e.target.parentNode.classList.contains('remove-btn');
+    const isRestoreBtnClick = e.target.classList.contains('restore-btn') || e.target.parentNode.classList.contains('restore-btn');
 
     if (!isRemoveBtnClick && !isRestoreBtnClick) {
         return;
@@ -229,7 +237,6 @@ $('startDownloadBtn').addEventListener('click', () => {
     const downloadType = $('startDownloadBtn').getAttribute('data-type');
 
     $('downloadBtn').click();
-    $('addBtn').classList.add('disabled');
     switch (downloadType) {
         case 'track':
         {
@@ -274,7 +281,8 @@ $('startDownloadBtn').addEventListener('click', () => {
 function hidePreloader() {
     $('preloader').classList.add('hidden');
     $('addContainer').classList.remove('hidden');
-    $('downloadBtn').classList.remove('disabled');
+    $('addBtn').disabled = false;
+    $('downloadBtn').disabled = false;
 }
 
 function generateDownloadArtist(artist) {
@@ -298,45 +306,43 @@ function generateDownloadArtist(artist) {
     const sortedAlbums = artist.albums.sort((a, b) => b.year - a.year);
 
     if (sortedAlbums.length) {
-        const name = `Альбомы (${sortedAlbums.length})`;
-        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label></h4>`;
+        const name = `<b>Альбомы <span class="badge">${sortedAlbums.length}</span></b>`;
+
+        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked>${name}</label></h4>`;
     }
     let year = 0;
 
-    albumContent += `<div class="panel panel-default panel-albums">`;
+    albumContent += '<div class="panel panel-default panel-albums">';
     sortedAlbums.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            albumContent += `<div class="panel-heading">`;
+            albumContent += '<div class="panel-heading">';
             albumContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
-            albumContent += `</div>`
+            albumContent += '</div>';
         }
-        let title = `[${album.trackCount}] ${album.title}`;
+        let title = `<span class="badge">${album.trackCount}</span> <strong>${album.title}</strong>`;
 
         if ('version' in album) {
             title += ` (${album.version})`;
         }
 
-        let coverUrl = (album.coverUri)
+        const coverUrl = album.coverUri
             ? `https://${album.coverUri.replace('%%', '70x70')}`
-            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
-        ;
+            : '../img/default_cover.png';
 
-        albumContent += `<div class="panel-body">`;
-        albumContent += `   <label>`;
+        albumContent += '<div class="panel-body">';
+        albumContent += '   <label>';
         albumContent += `       <input type="checkbox" class="album media-checkbox" checked value="${album.id}">`;
-        albumContent += `       <div class="media">`;
-        albumContent += `           <div class="media-left">`;
+        albumContent += '       <div class="media">';
+        albumContent += '           <div class="media-left">';
         albumContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
-        albumContent += `           </div>`;
-        albumContent += `           <div class="media-body">`;
-        albumContent += `               ${title}`;
-        albumContent += `           </div>`;
-        albumContent += `       </div>`;
-        albumContent += `   </label>`;
-        albumContent += `</div>`;
+        albumContent += '           </div>';
+        albumContent += `           <div class="media-body">${title}</div>`;
+        albumContent += '       </div>';
+        albumContent += '   </label>';
+        albumContent += '</div>';
     });
-    albumContent += `</div>`;
+    albumContent += '</div>';
 
     artist.alsoAlbums.forEach((album, i) => {
         if (!('year' in album)) { // пример https://music.yandex.ru/artist/64248
@@ -345,50 +351,48 @@ function generateDownloadArtist(artist) {
     });
     const sortedCompilations = artist.alsoAlbums.sort((a, b) => b.year - a.year);
 
-    compilationContent += `<div class="panel panel-default panel-compilations">`;
+    compilationContent += '<div class="panel panel-default panel-compilations">';
     if (sortedCompilations.length) {
-        const name = `Сборники (${sortedCompilations.length})`;
-        compilationContent += `<h4 class="compilations"><label><input type="checkbox" id="compilationCheckbox" checked><b>${name}</b></label></h4>`;
+        const name = `<b>Сборники <span class="badge">${sortedCompilations.length}</span></b>`;
+
+        compilationContent += `<h4 class="compilations"><label><input type="checkbox" id="compilationCheckbox">${name}</label></h4>`;
     }
     year = 0;
     sortedCompilations.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            compilationContent += `<div class="panel-heading">`;
+            compilationContent += '<div class="panel-heading">';
             compilationContent += `     <label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
-            compilationContent += `</div>`
+            compilationContent += '</div>';
         }
 
-        let title = `[${album.trackCount}] ${album.title}`;
+        let title = `<span class="badge">${album.trackCount}</span> <strong>${album.title}</strong>`;
 
         if ('version' in album) {
-            title += ` (${album.version})`;
+            title += `&nbsp;(${album.version})`;
         }
 
-        let coverUrl = (album.coverUri)
+        const coverUrl = album.coverUri
             ? `https://${album.coverUri.replace('%%', '70x70')}`
-            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
-        ;
+            : '../img/default_cover.png';
 
-        compilationContent += `<div class="panel-body">`;
-        compilationContent += `   <label>`;
-        compilationContent += `       <input type="checkbox" class="compilation media-checkbox" checked value="${album.id}">`;
-        compilationContent += `       <div class="media">`;
-        compilationContent += `           <div class="media-left">`;
+        compilationContent += '<div class="panel-body">';
+        compilationContent += '   <label>';
+        compilationContent += `       <input type="checkbox" class="compilation media-checkbox" value="${album.id}">`;
+        compilationContent += '       <div class="media">';
+        compilationContent += '           <div class="media-left">';
         compilationContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
-        compilationContent += `           </div>`;
-        compilationContent += `           <div class="media-body">`;
-        compilationContent += `               ${title}`;
-        compilationContent += `           </div>`;
-        compilationContent += `       </div>`;
-        compilationContent += `   </label>`;
-        compilationContent += `</div>`;
+        compilationContent += '           </div>';
+        compilationContent += `           <div class="media-body">${title}</div>`;
+        compilationContent += '       </div>';
+        compilationContent += '   </label>';
+        compilationContent += '</div>';
 
     });
-    compilationContent += `</div>`;
+    compilationContent += '</div>';
 
     $('name').innerText = artist.artist.name;
-    $('info').innerText = 'Дискография';
+    $('info').innerHTML = '<span class="label label-primary">Дискография</span>';
     $('albums').innerHTML = albumContent;
     $('compilations').innerHTML = compilationContent;
 
@@ -412,7 +416,6 @@ function generateDownloadArtist(artist) {
             }
         });
     }
-    $('addContainer').style.fontSize = '12px';
 }
 
 function generateDownloadLabel(label) {
@@ -426,52 +429,50 @@ function generateDownloadLabel(label) {
     const sortedAlbums = label.albums.sort((a, b) => b.year - a.year);
 
     if (sortedAlbums.length) {
-        const name = `Альбомы (${sortedAlbums.length})`;
-        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked><b>${name}</b></label></h4>`;
+        const name = `<b>Альбомы <span class="badge">${sortedAlbums.length}</span></b>`;
+
+        albumContent += `<h4 class="albums"><label><input type="checkbox" id="albumCheckbox" checked>${name}</label></h4>`;
     }
     let year = 0;
 
-    albumContent += `<div class="panel panel-default panel-albums">`;
+    albumContent += '<div class="panel panel-default panel-albums">';
     sortedAlbums.forEach((album) => {
         if (album.year !== year) {
             year = album.year;
-            albumContent += `<div class="panel-heading">`;
+            albumContent += '<div class="panel-heading">';
             albumContent += `<label class="label-year">${year === 0 ? 'Год не указан' : year}</label>`;
-            albumContent += `</div>`
+            albumContent += '</div>';
         }
         const artists = backgroundPage.fisher.utils.parseArtists(album.artists).artists.join(', ');
 
-        let title = `${album.title}`;
+        let title = `<strong>${album.title}</strong>`;
 
         if ('version' in album) {
-            title += ` (${album.version})`;
+            title += `&nbsp;(${album.version})`;
         }
 
-        let coverUrl = (album.coverUri)
+        const coverUrl = album.coverUri
             ? `https://${album.coverUri.replace('%%', '70x70')}`
-            : `data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAAAAA/+EDMWh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8APD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QzkwMERDMUNGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QzkwMERDMENGMDkxMUU1QkRDM0M2MUI0RDFCRkU5OSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoTWFjaW50b3NoKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkU0MzQ3N0Y5Q0YwODExRTVCREMzQzYxQjREMUJGRTk5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkU0MzQ3N0ZBQ0YwODExRTVCREMzQzYxQjREMUJGRTk5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+/+4ADkFkb2JlAGTAAAAAAf/bAIQAGxoaKR0pQSYmQUIvLy9CRz8+Pj9HR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHRwEdKSk0JjQ/KCg/Rz81P0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dH/8AAEQgAZABkAwEiAAIRAQMRAf/EAEsAAQEAAAAAAAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==`
-        ;
+            : '../img/default_cover.png';
 
-        const name = `[${album.trackCount}] ${artists} - ${title}`;
+        const name = `<span class="badge">${album.trackCount}</span> ${artists} - ${title}`;
 
-        albumContent += `<div class="panel-body">`;
-        albumContent += `   <label>`;
+        albumContent += '<div class="panel-body">';
+        albumContent += '   <label>';
         albumContent += `       <input type="checkbox" class="album media-checkbox" checked value="${album.id}">`;
-        albumContent += `       <div class="media">`;
-        albumContent += `           <div class="media-left">`;
+        albumContent += '       <div class="media">';
+        albumContent += '           <div class="media-left">';
         albumContent += `               <img class="media-object" width="35" height="35" src="${coverUrl}">`;
-        albumContent += `           </div>`;
-        albumContent += `           <div class="media-body">`;
-        albumContent += `               ${name}`;
-        albumContent += `           </div>`;
-        albumContent += `       </div>`;
-        albumContent += `   </label>`;
-        albumContent += `</div>`;
+        albumContent += '           </div>';
+        albumContent += `           <div class="media-body">${name}</div>`;
+        albumContent += '       </div>';
+        albumContent += '   </label>';
+        albumContent += '</div>';
     });
-    albumContent += `</div>`;
+    albumContent += '</div>';
 
     $('name').innerText = label.label.name;
-    $('info').innerText = 'Лейбл';
+    $('info').innerHTML = '<span class="label label-primary">Лейбл</span>';
     $('albums').innerHTML = albumContent;
 
     if (sortedAlbums.length) {
@@ -484,16 +485,18 @@ function generateDownloadLabel(label) {
             }
         });
     }
-    $('addContainer').style.fontSize = '12px';
 }
 
 function generateDownloadTrack(track) {
     const artists = backgroundPage.fisher.utils.parseArtists(track.artists).artists.join(', ');
     const size = backgroundPage.fisher.utils.bytesToStr(track.fileSize);
     const duration = backgroundPage.fisher.utils.durationToStr(track.durationMs);
+    const label = '<span class="label label-primary">Трек</span>';
+    const sizeBadge = `<span class="badge">${size}</span>`;
+    const durationBadge = `<span class="badge">${duration}</span>`;
 
     $('name').innerText = `${artists} - ${track.title}`;
-    $('info').innerText = `Трек / ${size} / ${duration}`;
+    $('info').innerHTML = `${label} ${sizeBadge} ${durationBadge}`;
 }
 
 function generateDownloadAlbum(album) {
@@ -520,8 +523,12 @@ function generateDownloadAlbum(album) {
     });
     const sizeStr = backgroundPage.fisher.utils.bytesToStr(size);
     const durationStr = backgroundPage.fisher.utils.durationToStr(duration);
+    const label = '<span class="label label-primary">Альбом</span>';
+    const trackCountBadge = `<span class="badge">${album.trackCount}</span>`;
+    const sizeBadge = `<span class="badge">${sizeStr}</span>`;
+    const durationBadge = `<span class="badge">${durationStr}</span>`;
 
-    $('info').innerText = `Альбом (${album.trackCount}) / ${sizeStr} / ${durationStr}`;
+    $('info').innerHTML = `${label} ${trackCountBadge} ${sizeBadge} ${durationBadge}`;
 }
 
 function generateDownloadPlaylist(playlist) {
@@ -544,16 +551,20 @@ function generateDownloadPlaylist(playlist) {
     });
     const sizeStr = backgroundPage.fisher.utils.bytesToStr(size);
     const durationStr = backgroundPage.fisher.utils.durationToStr(duration);
+    const label = '<span class="label label-primary">Плейлист</span>';
+    const trackCountBadge = `<span class="badge">${playlist.trackCount}</span>`;
+    const sizeBadge = `<span class="badge">${sizeStr}</span>`;
+    const durationBadge = `<span class="badge">${durationStr}</span>`;
 
-    $('info').innerText = `Плейлист (${playlist.trackCount}) / ${sizeStr} / ${durationStr}`;
+    $('info').innerHTML = `${label} ${trackCountBadge} ${sizeBadge} ${durationBadge}`;
 }
 
 function onAjaxFail(error) {
     backgroundPage.console.error(error);
     hidePreloader();
     $('addContainer').classList.add('hidden');
-    $('addBtn').classList.add('disabled');
     $('errorContainer').classList.remove('hidden');
+    $('addBtn').disabled = true;
 }
 
 function getBackgroundPage() {
@@ -566,7 +577,6 @@ chrome.runtime.onMessage.addListener(async(request) => {
     if (!request || request.action !== 'getCurrentTrackUrl' || !('link' in request)) {
         hidePreloader();
         $('downloadBtn').click();
-        $('addBtn').classList.add('disabled');
         return;
     }
     const url = backgroundPage.fisher.yandex.baseUrl + request.link;
@@ -692,7 +702,7 @@ async function loadPopup() {
     } else {
         hidePreloader();
         $('downloadBtn').click();
-        $('addBtn').classList.add('disabled');
+        $('addBtn').disabled = true;
     }
 }
 
