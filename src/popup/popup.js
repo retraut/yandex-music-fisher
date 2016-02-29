@@ -241,8 +241,9 @@ $('startDownloadBtn').addEventListener('click', () => {
         case 'track':
         {
             const trackId = $('startDownloadBtn').getAttribute('data-trackId');
+            const albumId = $('startDownloadBtn').getAttribute('data-albumId');
 
-            backgroundPage.fisher.downloader.downloadTrack(trackId);
+            backgroundPage.fisher.downloader.downloadTrack(trackId, albumId);
             break;
         }
         case 'album':
@@ -290,7 +291,7 @@ function generateDownloadArtist(artist) {
         $('downloadTop10Tracks').classList.remove('hidden');
         $('downloadTop10Tracks').addEventListener('click', () => {
             artist.tracks.forEach((track) => {
-                backgroundPage.fisher.downloader.downloadTrack(track.id);
+                backgroundPage.fisher.downloader.downloadTrack(track.id, track.albums[0]);
             });
             $('downloadBtn').click();
         });
@@ -593,7 +594,7 @@ chrome.runtime.onMessage.addListener(async(request) => {
     let json;
 
     try {
-        json = await backgroundPage.fisher.yandex.getTrack(page.trackId);
+        json = await backgroundPage.fisher.yandex.getTrack(page.trackId, page.albumId);
     } catch (e) {
         onAjaxFail(e);
         return;
@@ -638,6 +639,7 @@ async function loadPopup() {
     } else if (page.isTrack) {
         downloadBtn.setAttribute('data-type', 'track');
         downloadBtn.setAttribute('data-trackId', page.trackId);
+        downloadBtn.setAttribute('data-albumId', page.albumId);
         if (backgroundPage.fisher.storage.current.singleClickDownload) {
             hidePreloader();
             downloadBtn.click();
@@ -646,7 +648,7 @@ async function loadPopup() {
         let json;
 
         try {
-            json = await backgroundPage.fisher.yandex.getTrack(page.trackId);
+            json = await backgroundPage.fisher.yandex.getTrack(page.trackId, page.albumId);
         } catch (e) {
             onAjaxFail(e);
             return;

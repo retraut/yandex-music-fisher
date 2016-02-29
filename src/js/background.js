@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener((request) => {
     }
     const page = fisher.utils.getUrlInfo(fisher.yandex.baseUrl + request.link);
 
-    downloader.downloadTrack(page.trackId);
+    downloader.downloadTrack(page.trackId, page.albumId);
 });
 
 chrome.commands.onCommand.addListener((command) => {

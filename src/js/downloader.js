@@ -17,7 +17,7 @@ const downloader = {
     }),
     PATH_LIMIT: 50,
     downloads: new Map(),
-    downloadsCounter: 0,
+    downloadsLastIndex: 0,
     activeThreadCount: 0
 };
 
@@ -183,9 +183,9 @@ downloader.download = async() => {
     }
 };
 
-downloader.downloadTrack = (trackId) => {
+downloader.downloadTrack = (trackId, albumId) => {
     ga('send', 'event', 'track', trackId);
-    fisher.yandex.getTrack(trackId).then((json) => {
+    fisher.yandex.getTrack(trackId, albumId).then((json) => {
         const track = json.track;
 
         if ('error' in track) {
@@ -195,7 +195,7 @@ downloader.downloadTrack = (trackId) => {
         const trackEntity = {
             type: downloader.TYPE.TRACK,
             status: downloader.STATUS.WAITING,
-            index: downloader.downloadsCounter++,
+            index: downloader.downloadsLastIndex++,
             track,
             artists: fisher.utils.parseArtists(track.artists).artists.join(', '),
             title: track.title,
@@ -229,7 +229,7 @@ downloader.downloadAlbum = (albumId, artistOrLabelName) => {
         }
         const albumEntity = {
             type: downloader.TYPE.ALBUM,
-            index: downloader.downloadsCounter++,
+            index: downloader.downloadsLastIndex++,
             duration: 0,
             size: 0,
             artists: fisher.utils.parseArtists(album.artists).artists.join(', '),
@@ -343,7 +343,7 @@ downloader.downloadPlaylist = (username, playlistId) => {
         }
         const playlistEntity = {
             type: downloader.TYPE.PLAYLIST,
-            index: downloader.downloadsCounter++,
+            index: downloader.downloadsLastIndex++,
             duration: 0,
             size: 0,
             title: playlist.title,

@@ -26,8 +26,9 @@ class Yandex {
         return `https://${downloadInfo.host}/get-mp3/${hash}/${downloadInfo.ts + downloadInfo.path}`;
     }
 
-    getTrack(trackId) {
-        const url = `${this.baseUrl}/handlers/track.jsx?track=${trackId}`;
+    getTrack(trackId, albumId) {
+        // albumId ставит альбом на первое место в массиве .track.albums
+        const url = `${this.baseUrl}/handlers/track.jsx?track=${trackId}%3A${albumId}`;
 
         return fetch(url, options)
             .then(fisher.utils.parseJsonResponse);

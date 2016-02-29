@@ -23,7 +23,7 @@ document.getElementById('trackIdInput').addEventListener('input', async function
     let response;
 
     try {
-        response = await backgroundPage.fisher.yandex.getTrack(trackId);
+        response = await backgroundPage.fisher.yandex.getTrack(trackId, 1);
     } catch (e) {
         output.innerHTML = 'Network error';
         return;

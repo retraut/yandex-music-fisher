@@ -142,6 +142,7 @@ function getUrlInfo(url) {
             info.playlistId = parts[4];
         } else if (info.isTrack) {
             info.trackId = parts[4];
+            info.albumId = parts[2];
         } else if (info.isAlbum) {
             info.albumId = parts[2];
         } else if (info.isArtist) {
