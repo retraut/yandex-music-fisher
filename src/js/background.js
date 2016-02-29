@@ -3,11 +3,11 @@
 require('../vendor/ga');
 
 const utils = require('./utils');
-const yandex = require('./yandex');
+const Yandex = require('./yandex');
 const storage = require('./storage');
 const downloader = require('./downloader');
 const version = chrome.runtime.getManifest().version;
-const fisher = {utils, yandex, storage, downloader};
+const fisher = {utils, yandex: new Yandex(), storage, downloader};
 
 let distributionUrl;
 

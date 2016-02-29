@@ -6,49 +6,48 @@ const options = {
     credentials: 'include'
 };
 
-class yandex {
+class Yandex {
 
-    static get baseUrl() {
-        return `https://music.yandex.${fisher.storage.current.domain}`;
+    constructor() {
+        this.domain = 'ru'; // ru, ua, kz, by
     }
 
-    static getTrackUrl(trackId) {
-        const url = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
-
-        return fetch(url, options)
-            .then(fisher.utils.parseJsonResponse)
-            .then((info) => fetch(`${info.src}&format=json`, options))
-            .then(fisher.utils.parseJsonResponse)
-            .then((info) => {
-                const salt = 'XGRlBW9FXlekgbPrRHuSiA';
-                const hash = md5(salt + info.path.substr(1) + info.s);
-
-                return `https://${info.host}/get-mp3/${hash}/${info.ts + info.path}`;
-            });
+    get baseUrl() {
+        return `https://music.yandex.${this.domain}`;
     }
 
-    static getTrack(trackId) {
+    async getTrackUrl(trackId) {
+        const trackInfoUrl = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
+        const trackInfo = fisher.utils.parseJsonResponse(await fetch(trackInfoUrl, options));
+        const downloadInfo = fisher.utils.parseJsonResponse(await fetch(`${trackInfo.src}&format=json`));
+        const salt = 'XGRlBW9FXlekgbPrRHuSiA';
+        const hash = md5(salt + downloadInfo.path.substr(1) + downloadInfo.s);
+
+        return `https://${downloadInfo.host}/get-mp3/${hash}/${downloadInfo.ts + downloadInfo.path}`;
+    }
+
+    getTrack(trackId) {
         const url = `${this.baseUrl}/handlers/track.jsx?track=${trackId}`;
 
         return fetch(url, options)
             .then(fisher.utils.parseJsonResponse);
     }
 
-    static getArtist(artistId) {
+    getArtist(artistId) {
         const url = `${this.baseUrl}/handlers/artist.jsx?artist=${artistId}&what=albums`;
 
         return fetch(url, options)
             .then(fisher.utils.parseJsonResponse);
     }
 
-    static getAlbum(albumId) {
+    getAlbum(albumId) {
         const url = `${this.baseUrl}/handlers/album.jsx?album=${albumId}`;
 
         return fetch(url, options)
             .then(fisher.utils.parseJsonResponse);
     }
 
-    static getPlaylist(username, playlistId) {
+    getPlaylist(username, playlistId) {
         const url = `${this.baseUrl}/handlers/playlist.jsx?owner=${username}&kinds=${playlistId}`;
 
         return fetch(url, options)
@@ -56,7 +55,7 @@ class yandex {
             .then((json) => json.playlist);
     }
 
-    static getLabel(labelId) {
+    getLabel(labelId) {
         const url = `${this.baseUrl}/handlers/label.jsx?sort=year&id=${labelId}`;
 
         return fetch(url, options)
@@ -64,4 +63,4 @@ class yandex {
     }
 }
 
-module.exports = yandex;
+module.exports = Yandex;

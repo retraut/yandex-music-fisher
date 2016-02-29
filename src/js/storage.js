@@ -28,7 +28,6 @@ storage.init = () => {
 storage.load = () => new Promise((resolve) => {
     chrome.storage.local.get((params) => {
         storage.current = params;
-        storage.current.domain = 'ru';
         resolve();
     });
 });
