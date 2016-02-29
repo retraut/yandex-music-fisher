@@ -8,6 +8,9 @@ module.exports = {
     "globals": {
         "chrome": false
     },
+    "plugins": [
+        "babel"
+    ],
     "rules": { // http://eslint.org/docs/rules/
 
         // possible errors
@@ -57,6 +60,7 @@ module.exports = {
         "no-case-declarations": 2, // disallow lexical declarations in case clauses
         "no-div-regex": 2, // disallow division operators explicitly at beginning of regular expression
         "no-else-return": 2, // disallow else after a return in an if
+        "no-empty-function": 0, // disallow use of empty functions
         "no-empty-pattern": 2, // disallow use of empty destructuring patterns
         "no-eq-null": 2, // disallow comparisons to null without a type-checking operator
         "no-eval": 2, // disallow use of eval()
@@ -148,17 +152,17 @@ module.exports = {
         "id-length": 0, // this option enforces minimum and maximum identifier lengths (variable names, property names etc.)
         "id-match": 2, // require identifiers to match the provided regular expression
         "id-blacklist": 0, // blacklist certain identifiers to prevent them being used
-        "indent": 1, // specify tab or space width for your code
+        "indent": 0, // specify tab or space width for your code
         "jsx-quotes": 2, // specify whether double or single quotes should be used in JSX attributes
         "key-spacing": 2, // enforce spacing between keys and values in object literal properties
         "keyword-spacing": 2, // enforce spacing before and after keywords
         "linebreak-style": [2, "windows"], // disallow mixed 'LF' and 'CRLF' as linebreaks
         "lines-around-comment": 2, // enforce empty lines around comments
         "max-depth": 2, // specify the maximum depth that blocks can be nested
-        "max-len": [2, 120], // specify the maximum length of a line in your program
+        "max-len": [1, 120], // specify the maximum length of a line in your program
         "max-nested-callbacks": 2, // specify the maximum depth callbacks can be nested
         "max-params": [2, 5], // limits the number of parameters that can be used in the function declaration.
-        "max-statements": 1, // specify the maximum number of statement allowed in a function
+        "max-statements": [1, 50], // specify the maximum number of statement allowed in a function
         "new-cap": 2, // require a capital letter for constructors
         "new-parens": 2, // disallow the omission of parentheses when invoking a constructor with no arguments
         "newline-after-var": 2, // require or disallow an empty newline after variable declarations
@@ -202,10 +206,10 @@ module.exports = {
 
         // ecmascript 6
         "arrow-body-style": 2, // require braces in arrow function body
-        "arrow-parens": 2, // require parens in arrow function arguments
+        "arrow-parens": 0, // require parens in arrow function arguments
         "arrow-spacing": 2, // require space before/after arrow function's arrow 
         "constructor-super": 2, // verify calls of super() in constructors
-        "generator-star-spacing": 1, // enforce spacing around the * in generator functions
+        "generator-star-spacing": 0, // enforce spacing around the * in generator functions
         "no-class-assign": 2, // disallow modifying variables of class declarations
         "no-confusing-arrow": 2, // disallow arrow functions where they could be confused with comparisons
         "no-const-assign": 2, // disallow modifying variables that are declared using const
@@ -221,6 +225,15 @@ module.exports = {
         "prefer-template": 2, // suggest using template literals instead of strings concatenation
         "require-yield": 2, // disallow generator functions that do not have yield
         "template-curly-spacing": 2, // enforce spacing around embedded expressions of template strings
-        "yield-star-spacing": 2 // enforce spacing around the * in yield* expressions
+        "yield-star-spacing": 2, // enforce spacing around the * in yield* expressions
+
+        // babel plugin https://github.com/babel/eslint-plugin-babel
+        "babel/generator-star-spacing": 2, // Handles async/await functions correctly
+        "babel/new-cap": 0, // Ignores capitalized decorators (@Decorator)
+        "babel/array-bracket-spacing": 0, // Handles destructuring arrays with flow type in function parameters
+        "babel/object-curly-spacing": 0, // doesn't complain about export x from "mod"; or export * as x from "mod";
+        "babel/object-shorthand": 0, // doesn't fail when using object spread (...obj)
+        "babel/arrow-parens": 2, // Handles async functions correctly
+        "babel/no-await-in-loop": 0 // guard against awaiting async functions inside of a loop
     }
 };
