@@ -392,8 +392,8 @@ function generateDownloadArtist(artist) {
     });
     compilationContent += '</div>';
 
-    $('name').innerText = artist.artist.name;
-    $('info').innerHTML = '<span class="label label-primary">Дискография</span>';
+    $('name').innerHTML = `${artist.artist.name} <span class="label label-default">Дискография</span>`;
+    // $('info').innerHTML = 'Сдаётся рекламное место';
     $('albums').innerHTML = albumContent;
     $('compilations').innerHTML = compilationContent;
 
@@ -472,8 +472,8 @@ function generateDownloadLabel(label) {
     });
     albumContent += '</div>';
 
-    $('name').innerText = label.label.name;
-    $('info').innerHTML = '<span class="label label-primary">Лейбл</span>';
+    $('name').innerHTML = `${label.label.name} <span class="label label-default">Лейбл</span>`;
+    // $('info').innerHTML = 'Продам гараж';
     $('albums').innerHTML = albumContent;
 
     if (sortedAlbums.length) {
@@ -492,18 +492,19 @@ function generateDownloadTrack(track) {
     const artists = backgroundPage.fisher.utils.parseArtists(track.artists).artists.join(', ');
     const size = backgroundPage.fisher.utils.bytesToStr(track.fileSize);
     const duration = backgroundPage.fisher.utils.durationToStr(track.durationMs);
-    const label = '<span class="label label-primary">Трек</span>';
+    const label = '<span class="label label-default">Трек</span>';
     const sizeBadge = `<span class="badge">${size}</span>`;
     const durationBadge = `<span class="badge">${duration}</span>`;
 
-    $('name').innerText = `${artists} - ${track.title}`;
-    $('info').innerHTML = `${label} ${sizeBadge} ${durationBadge}`;
+    $('name').innerHTML = `${artists} - ${track.title} ${label}`;
+    $('info').innerHTML = `${sizeBadge} ${durationBadge}`;
 }
 
 function generateDownloadAlbum(album) {
     const artists = backgroundPage.fisher.utils.parseArtists(album.artists).artists.join(', ');
+    const label = '<span class="label label-default">Альбом</span>';
 
-    $('name').innerText = `${artists} - ${album.title}`;
+    $('name').innerHTML = `${artists} - ${album.title} ${label}`;
     if (!album.trackCount) {
         $('info').innerText = 'Пустой альбом';
         $('startDownloadBtn').style.display = 'none';
@@ -524,16 +525,17 @@ function generateDownloadAlbum(album) {
     });
     const sizeStr = backgroundPage.fisher.utils.bytesToStr(size);
     const durationStr = backgroundPage.fisher.utils.durationToStr(duration);
-    const label = '<span class="label label-primary">Альбом</span>';
     const trackCountBadge = `<span class="badge">${album.trackCount}</span>`;
     const sizeBadge = `<span class="badge">${sizeStr}</span>`;
     const durationBadge = `<span class="badge">${durationStr}</span>`;
 
-    $('info').innerHTML = `${label} ${trackCountBadge} ${sizeBadge} ${durationBadge}`;
+    $('info').innerHTML = `${trackCountBadge} ${sizeBadge} ${durationBadge}`;
 }
 
 function generateDownloadPlaylist(playlist) {
-    $('name').innerText = playlist.title;
+    const label = '<span class="label label-default">Плейлист</span>';
+
+    $('name').innerHTML = `${playlist.title} ${label}`;
     if (!playlist.trackCount) {
         $('info').innerText = 'Пустой плейлист';
         $('startDownloadBtn').style.display = 'none';
@@ -552,12 +554,11 @@ function generateDownloadPlaylist(playlist) {
     });
     const sizeStr = backgroundPage.fisher.utils.bytesToStr(size);
     const durationStr = backgroundPage.fisher.utils.durationToStr(duration);
-    const label = '<span class="label label-primary">Плейлист</span>';
     const trackCountBadge = `<span class="badge">${playlist.trackCount}</span>`;
     const sizeBadge = `<span class="badge">${sizeStr}</span>`;
     const durationBadge = `<span class="badge">${durationStr}</span>`;
 
-    $('info').innerHTML = `${label} ${trackCountBadge} ${sizeBadge} ${durationBadge}`;
+    $('info').innerHTML = `${trackCountBadge} ${sizeBadge} ${durationBadge}`;
 }
 
 function onAjaxFail(error) {
