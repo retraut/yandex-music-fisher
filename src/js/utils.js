@@ -103,7 +103,7 @@ function parseArtists(allArtists) {
         if (composers.length) {
             artists = composers;
         } else {
-            artists.push(UA);
+            artists = [UA];
         }
     }
     return {artists, composers};
