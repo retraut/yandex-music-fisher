@@ -18,8 +18,8 @@ class Yandex {
 
     async getTrackUrl(trackId) {
         const trackInfoUrl = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
-        const trackInfo = fisher.utils.parseJsonResponse(await fetch(trackInfoUrl, options));
-        const downloadInfo = fisher.utils.parseJsonResponse(await fetch(`${trackInfo.src}&format=json`));
+        const trackInfo = await fisher.utils.parseJsonResponse(await fetch(trackInfoUrl, options));
+        const downloadInfo = await fisher.utils.parseJsonResponse(await fetch(`${trackInfo.src}&format=json`));
         const salt = 'XGRlBW9FXlekgbPrRHuSiA';
         const hash = md5(salt + downloadInfo.path.substr(1) + downloadInfo.s);
 
