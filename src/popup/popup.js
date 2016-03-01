@@ -549,7 +549,7 @@ function generateDownloadPlaylist(playlist) {
         if ('error' in track) {
             return;
         }
-        size += track.fileSize;
+        size += track.fileSize || backgroundPage.fisher.downloader.defaultBitrate * (track.durationMs / 1000);
         duration += track.durationMs;
     });
     const sizeStr = backgroundPage.fisher.utils.bytesToStr(size);
