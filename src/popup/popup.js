@@ -126,7 +126,7 @@ function updateDownloader() {
     let content = '';
 
     if (!downloads.size) {
-        content += '<div class="alert alert-info alert-empty-downloads">';
+        content += '<div class="alert alert-info">';
         content += '<strong>Загрузок нет</strong>';
         content += '<br /><br />';
         content += '<p>Чтобы скачать музыку перейдите на сервис Яндекс.Музыка или Яндекс.Радио</p>';
