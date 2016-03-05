@@ -576,7 +576,7 @@ function getBackgroundPage() {
 }
 
 chrome.runtime.onMessage.addListener(async(request) => {
-    if (!request || request.action !== 'getCurrentTrackUrl' || !('link' in request)) {
+    if (!request || request.action !== 'getCurrentTrackUrl' || !request.link) {
         hidePreloader();
         $('downloadBtn').click();
         $('addBtn').disabled = true;
@@ -585,6 +585,14 @@ chrome.runtime.onMessage.addListener(async(request) => {
     const url = backgroundPage.fisher.yandex.baseUrl + request.link;
     const page = backgroundPage.fisher.utils.getUrlInfo(url);
     const downloadBtn = $('startDownloadBtn');
+
+    if (!page.isTrack || page.albumId === 'undefined') {
+        // временный патч, пока не пофиксят на яндекс.музыке externalAPI.getCurrentTrack().link
+        hidePreloader();
+        $('downloadBtn').click();
+        $('addBtn').disabled = true;
+        return;
+    }
 
     downloadBtn.setAttribute('data-type', 'track');
     downloadBtn.setAttribute('data-trackId', page.trackId);
