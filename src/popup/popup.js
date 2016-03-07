@@ -50,9 +50,9 @@ function generateListView(entity) {
     const totalTrackMaxSizeStr = background.fisher.utils.bytesToStr(totalTrackMaxSize);
 
     if (isLoading) {
-        status = `<span class="text-primary">Загрузка [${loadedTrackSizeStr} из ${totalTrackMinSizeStr} - ${totalTrackMaxSizeStr}]</span>`;
+        status = `<span class="text-primary">Загрузка: ${loadedTrackSizeStr} из [${totalTrackMinSizeStr} - ${totalTrackMaxSizeStr}]</span>`;
     } else if (isInterrupted) {
-        status = `<span class="text-danger">Ошибка [скачано ${loadedTrackSizeStr} из ${totalTrackMinSizeStr} - ${totalTrackMaxSizeStr}]</span>`;
+        status = '<span class="text-danger">Опаньки... Попробуйте нажать голубую кнопку справа &rarr;</span>';
     } else if (isFinished) {
         status = `<span class="text-success">Сохранён [${loadedTrackSizeStr}]</span>`;
     } else if (isWaiting) {
@@ -101,11 +101,11 @@ function generateTrackView(entity) {
     if (isWaiting) {
         status = `<span class="text-muted">В очереди [${minSizeStr} - ${maxSizeStr}]</span>`;
     } else if (isLoading) {
-        status = `<span class="text-primary">Загрузка [${loadedSizeStr} из ${minSizeStr} - ${maxSizeStr}]</span>`;
+        status = `<span class="text-primary">Загрузка: ${loadedSizeStr} из [${minSizeStr} - ${maxSizeStr}]</span>`;
     } else if (isFinished) {
         status = `<span class="text-success">Сохранён [${loadedSizeStr}]</span>`;
     } else if (isInterrupted) {
-        status = `<span class="text-danger">Ошибка [скачано ${loadedSizeStr} из ${minSizeStr} - ${maxSizeStr}]</span>`;
+        status = '<span class="text-danger">Опаньки... Попробуйте нажать голубую кнопку справа &rarr;</span>';
     }
 
     let view = '<div class="panel panel-default">';
