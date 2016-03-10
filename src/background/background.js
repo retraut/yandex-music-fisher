@@ -13,12 +13,6 @@ let distributionUrl;
 
 window.fisher = fisher;
 
-fisher.openHelpersPage = function () {
-    chrome.tabs.create({
-        url: 'helpers/index.html'
-    });
-};
-
 ga('create', 'UA-65530110-1', 'auto');
 ga('set', 'checkProtocolTask', null); // разрешает протокол "chrome-extension"
 ga('set', 'page', '/home');

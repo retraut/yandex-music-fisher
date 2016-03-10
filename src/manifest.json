@@ -58,12 +58,10 @@
   "browser_action": {
     "default_title": "Yandex Music Fisher",
     "default_popup": "popup/popup.html",
-    "default_icon": "img/black.png"
+    "default_icon": "background/img/black.png"
   },
   "icons": {
-    "16": "img/icon.png",
-    "48": "img/icon.png",
-    "128": "img/icon.png"
+    "128": "background/img/icon.png"
   },
   "homepage_url": "https://github.com/egoroof/yandex-music-fisher"
 }
