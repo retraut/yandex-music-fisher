@@ -164,13 +164,13 @@ async function loadBackground() {
     distributionUrl = updateInfo.distUrl;
     chrome.notifications.create('yandex-music-fisher-update', {
         type: 'basic',
-        iconUrl: '/img/icon.png',
+        iconUrl: '/background/img/icon.png',
         title: 'Yandex Music Fisher',
         message: `Доступно обновление ${updateInfo.version}`,
         contextMessage: 'Обновления устанавливаются вручную!',
         buttons: [{
             title: 'Скачать обновление',
-            iconUrl: '/img/download.png'
+            iconUrl: '/background/img/download.png'
         }, {
             title: 'Просмотреть изменения'
         }],
