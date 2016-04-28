@@ -17,14 +17,14 @@ class Yandex {
     }
 
     async getTrackUrl(trackId) {
-    const trackInfoUrl = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
-    const trackInfo = await fisher.utils.parseJsonResponse(await fetch(trackInfoUrl, options));
-    const downloadInfo = await fisher.utils.parseJsonResponse(await fetch(`${trackInfo.src}&format=json`));
-    const salt = 'XGRlBW9FXlekgbPrRHuSiA';
-    const hash = md5(salt + downloadInfo.path.substr(1) + downloadInfo.s);
+        const trackInfoUrl = `${this.baseUrl}/api/v2.0/handlers/track/${trackId}/download/m?hq=1`;
+        const trackInfo = await fisher.utils.parseJsonResponse(await fetch(trackInfoUrl, options));
+        const downloadInfo = await fisher.utils.parseJsonResponse(await fetch(`${trackInfo.src}&format=json`));
+        const salt = 'XGRlBW9FXlekgbPrRHuSiA';
+        const hash = md5(salt + downloadInfo.path.substr(1) + downloadInfo.s);
 
-    return `https://${downloadInfo.host}/get-mp3/${hash}/${downloadInfo.ts + downloadInfo.path}`;
-}
+        return `https://${downloadInfo.host}/get-mp3/${hash}/${downloadInfo.ts + downloadInfo.path}`;
+    }
 
     getTrack(trackId, albumId) {
         // albumId ставит альбом на первое место в массиве .track.albums
@@ -35,13 +35,20 @@ class Yandex {
     }
 
     getArtist(artistId) {
-        let artist = fetch(`${this.baseUrl}/handlers/artist.jsx?artist=${artistId}&what=albums`, options)
-            .then(fisher.utils.parseJsonResponse);
+        const url = `${this.baseUrl}/handlers/artist.jsx?artist=${artistId}&what=`;
+        let artist;
 
-        artist.tracks = fetch(`${this.baseUrl}/handlers/artist.jsx?artist=${artistId}&what=tracks`, options)
-                .then(fisher.utils.parseJsonResponse).then((json) => json.tracks);
-
-        return artist;
+        return fetch(`${url}albums`, options)
+            .then(fisher.utils.parseJsonResponse)
+            .then((json) => {
+                artist = json;
+                return fetch(`${url}tracks`, options);
+            })
+            .then(fisher.utils.parseJsonResponse)
+            .then((json) => {
+                artist.tracks = json.tracks;
+                return artist;
+            });
     }
 
     getAlbum(albumId) {
@@ -55,8 +62,8 @@ class Yandex {
         const url = `${this.baseUrl}/handlers/playlist.jsx?owner=${username}&kinds=${playlistId}`;
 
         return fetch(url, options)
-                .then(fisher.utils.parseJsonResponse)
-                .then((json) => json.playlist);
+            .then(fisher.utils.parseJsonResponse)
+            .then((json) => json.playlist);
     }
 
     getLabel(labelId) {
