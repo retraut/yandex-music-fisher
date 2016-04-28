@@ -298,7 +298,7 @@ function generateDownloadArtist(artist) {
     if (artist.tracks.length) {
         $('downloadTop10Tracks').classList.remove('hidden');
         $('downloadTop10Tracks').addEventListener('click', () => {
-            artist.tracks.forEach((track) => {
+            artist.tracks.slice(0, parseInt($('numOfTopTracks').value)).forEach((track) => {
                 background.fisher.downloader.downloadTrack(track.id, track.albums[0].id);
             });
             $('downloadBtn').click();
