@@ -98,6 +98,12 @@ downloader.download = async() => {
             if ('labels' in trackAlbum && Array.isArray(trackAlbum.labels) && trackAlbum.labels.length) {
                 writer.setFrame('TPUB', trackAlbum.labels.map((label) => label.name).join(', '));
             }
+            if ('trackPosition' in entity && 'trackCountInAlbum' in entity) {
+                writer.setFrame('TRCK', `${entity.trackPosition}/${entity.trackCountInAlbum}`);
+            }
+            if ('albumPosition' in entity && 'albumCount' in entity) {
+                writer.setFrame('TPOS', `${entity.albumPosition}/${entity.albumCount}`);
+            }
         }
 
         if ('title' in entity) {
@@ -111,12 +117,6 @@ downloader.download = async() => {
         }
         if (artists.composers.length) {
             writer.setFrame('TCOM', artists.composers);
-        }
-        if ('trackPosition' in entity) {
-            writer.setFrame('TRCK', entity.trackPosition);
-        }
-        if ('albumPosition' in entity && entity.albumCount > 1) {
-            writer.setFrame('TPOS', entity.albumPosition);
         }
         if ('lyrics' in entity && typeof entity.lyrics === 'string') {
             writer.setFrame('USLT', entity.lyrics);
@@ -310,6 +310,7 @@ downloader.downloadAlbum = (albumId, folder) => {
                     loadedBytes: 0,
                     attemptCount: 0,
                     trackPosition,
+                    trackCountInAlbum: volume.length,
                     albumPosition,
                     albumCount: album.volumes.length,
                     browserDownloadId: null
