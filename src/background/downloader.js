@@ -191,7 +191,7 @@ downloader.download = async() => {
     }
 };
 
-downloader.downloadTrack = (trackId, albumId) => {
+downloader.downloadTrack = (trackId, albumId, folder) => {
     ga('send', 'event', 'track', trackId);
     fisher.yandex.getTrack(trackId, albumId).then((json) => {
         const track = json.track;
@@ -207,7 +207,7 @@ downloader.downloadTrack = (trackId, albumId) => {
             track,
             artists: fisher.utils.parseArtists(track.artists).artists.join(', '),
             title: track.title,
-            savePath: null,
+            savePath: '',
             lyrics: null,
             loadedBytes: 0,
             attemptCount: 0,
@@ -223,13 +223,18 @@ downloader.downloadTrack = (trackId, albumId) => {
         const shortArtists = trackEntity.artists.substr(0, downloader.PATH_LIMIT);
         const shortTitle = trackEntity.title.substr(0, downloader.PATH_LIMIT);
 
-        trackEntity.savePath = fisher.utils.clearPath(`${shortArtists} - ${shortTitle}.mp3`);
+        if (folder) {
+            const shortFolder = folder.substr(0, downloader.PATH_LIMIT);
+            trackEntity.savePath = `${fisher.utils.clearPath(shortFolder, true)}/`;
+        }
+
+        trackEntity.savePath += fisher.utils.clearPath(`${shortArtists} - ${shortTitle}.mp3`);
         downloader.downloads.set(trackEntity.index, trackEntity);
         downloader.download();
     }).catch((e) => console.error(e));
 };
 
-downloader.downloadAlbum = (albumId, artistOrLabelName) => {
+downloader.downloadAlbum = (albumId, folder) => {
     ga('send', 'event', 'album', albumId);
     fisher.yandex.getAlbum(albumId).then((album) => {
         if (!album.trackCount) {
@@ -249,10 +254,9 @@ downloader.downloadAlbum = (albumId, artistOrLabelName) => {
         }
         let saveDir = '';
 
-        if (artistOrLabelName) {
-            const shortName = artistOrLabelName.substr(0, downloader.PATH_LIMIT);
-
-            saveDir += `${fisher.utils.clearPath(shortName, true)}/`;
+        if (folder) {
+            const shortFolder = folder.substr(0, downloader.PATH_LIMIT);
+            saveDir += `${fisher.utils.clearPath(shortFolder, true)}/`;
         }
         const shortAlbumArtists = albumEntity.artists.substr(0, downloader.PATH_LIMIT);
         const shortAlbumTitle = albumEntity.title.substr(0, downloader.PATH_LIMIT);
