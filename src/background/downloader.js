@@ -131,9 +131,14 @@ downloader.download = async() => {
         }
         writer.addTag();
 
+        let savePath = entity.savePath;
+        if (fisher.storage.current.shouldUseFolder) {
+            savePath = `${fisher.storage.current.folder}/${savePath}`;
+        }
+
         chrome.downloads.download({
             url: writer.getURL(),
-            filename: entity.savePath,
+            filename: savePath,
             conflictAction: 'overwrite',
             saveAs: false
         }, onChromeDownloadStart);
@@ -182,9 +187,14 @@ downloader.download = async() => {
         const blob = new Blob([buffer], {type: 'image/jpeg'});
         const localUrl = window.URL.createObjectURL(blob);
 
+        let savePath = entity.savePath;
+        if (fisher.storage.current.shouldUseFolder) {
+            savePath = `${fisher.storage.current.folder}/${savePath}`;
+        }
+
         chrome.downloads.download({
             url: localUrl,
-            filename: entity.filename,
+            filename: savePath,
             conflictAction: 'overwrite',
             saveAs: false
         }, onChromeDownloadStart);
@@ -273,7 +283,7 @@ downloader.downloadAlbum = (albumId, folder) => {
                 index: albumEntity.index,
                 status: downloader.STATUS.WAITING,
                 url: `https://${album.coverUri.replace('%%', fisher.storage.current.albumCoverSize)}`,
-                filename: `${saveDir}/cover.jpg`,
+                savePath: `${saveDir}/cover.jpg`,
                 loadedBytes: 0,
                 attemptCount: 0
             };
