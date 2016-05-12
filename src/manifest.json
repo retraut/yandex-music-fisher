@@ -5,7 +5,6 @@
   "version": "1.10.0",
   "permissions": [
     "tabs",
-    "storage",
     "downloads",
     "downloads.shelf",
     "https://music.yandex.ru/",

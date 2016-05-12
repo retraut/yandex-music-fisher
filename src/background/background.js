@@ -22,7 +22,6 @@ chrome.browserAction.setBadgeBackgroundColor({
 fisher.utils.updateBadge();
 
 chrome.runtime.onInstalled.addListener((details) => { // установка или обновление расширения
-    storage.init();
     if (details.reason === 'install') {
         ga('send', 'event', 'install', version);
     } else if (details.reason === 'update' && details.previousVersion !== version) {
@@ -83,5 +82,3 @@ chrome.downloads.onChanged.addListener((delta) => {
         downloader.download();
     });
 });
-
-storage.load();
