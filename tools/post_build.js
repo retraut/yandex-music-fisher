@@ -44,9 +44,12 @@ function createManifest() {
             'background'
         ];
         manifest.minimum_chrome_version = '49.0';
+        manifest.permissions.push('downloads.shelf');
     }
     if (isOpera) {
         manifest.minimum_chrome_version = '49.0';
+        manifest.permissions.push('permissions');
+        manifest.permissions.push('https://www.google-analytics.com/analytics.js');
     }
 
     const newManifest = JSON.stringify(manifest, null, 2).replace(/[\n]/g, os.EOL) + os.EOL;

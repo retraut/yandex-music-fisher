@@ -6,7 +6,6 @@
   "permissions": [
     "tabs",
     "downloads",
-    "downloads.shelf",
     "https://music.yandex.ru/",
     "https://music.yandex.ua/",
     "https://music.yandex.kz/",

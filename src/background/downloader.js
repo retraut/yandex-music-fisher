@@ -70,7 +70,9 @@ downloader.download = async() => {
         if ('lastError' in chrome.runtime) {
             onInterruptEntity(chrome.runtime.lastError.message);
         } else {
-            chrome.downloads.setShelfEnabled(false);
+            if (PLATFORM_CHROMIUM) {
+                chrome.downloads.setShelfEnabled(false);
+            }
             entity.browserDownloadId = downloadId;
         }
     }

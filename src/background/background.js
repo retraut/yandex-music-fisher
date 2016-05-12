@@ -49,7 +49,9 @@ chrome.tabs.onActivated.addListener((activeInfo) => { // переключени�
 
 chrome.downloads.onChanged.addListener((delta) => {
     if (!('state' in delta)) { // состояние не изменилось (начало загрузки)
-        fisher.utils.getDownload(delta.id).then(() => chrome.downloads.setShelfEnabled(true));
+        if (PLATFORM_CHROMIUM) {
+            fisher.utils.getDownload(delta.id).then(() => chrome.downloads.setShelfEnabled(true));
+        }
         // не нашёл способа перехватывать ошибки, когда другое расширение отключает анимацию загрузок
         return;
     }
