@@ -120,6 +120,9 @@ function getUrlInfo(url) {
         isArtist: false,
         isLabel: false
     };
+    if (!url) {
+        return info;
+    }
     const urlData = new URL(url);
     const parts = urlData.pathname.split('/');
     const musicMatch = urlData.hostname.match(/^music\.yandex\.(ru|by|kz|ua)$/);

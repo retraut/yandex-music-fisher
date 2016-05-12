@@ -1,4 +1,4 @@
-# Yandex Music Fisher (1.10.0)
+# Yandex Music Fisher
 
 Расширение браузера для скачивания музыки с сервисов [Яндекс.Музыка](https://music.yandex.ru/)
 и [Яндекс.Радио](https://radio.yandex.ru/).

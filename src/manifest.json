@@ -17,9 +17,6 @@
     "https://avatars.yandex.net/",
     "https://storage.mds.yandex.net/"
   ],
-  "optional_permissions": [
-    "background"
-  ],
   "commands": {
     "download_playing_track": {
       "description": "Скачать играющий трек",
