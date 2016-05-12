@@ -7,7 +7,7 @@
     "build": "npm prune && npm update && npm run build:all",
     "build:all": "npm run build:chromium && npm run build:firefox && npm run build:opera",
     "build:chromium": "webpack && node tools/post_build.js",
-    "build:firefox": "webpack --firefox && node tools/post_build.js --firefox",
+    "build:firefox": "webpack --firefox",
     "build:opera": "webpack --opera && node tools/post_build.js --opera",
     "lint": "eslint -c tools/.eslintrc.js --ignore-pattern src/vendor/** src/**/*.js",
     "increment-version:major": "node tools/increment_version.js --version=major",
