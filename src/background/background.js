@@ -46,33 +46,6 @@ chrome.tabs.onActivated.addListener((activeInfo) => { // переключени�
     });
 });
 
-chrome.runtime.onMessage.addListener((request) => {
-    if (!request || request.action !== 'downloadCurrentTrack' || !request.link) {
-        return;
-    }
-    const page = fisher.utils.getUrlInfo(fisher.yandex.baseUrl + request.link);
-
-    if (!page.isTrack || page.albumId === 'undefined') {
-        // временный патч, пока не пофиксят на яндекс.музыке externalAPI.getCurrentTrack().link
-        return;
-    }
-
-    downloader.downloadTrack(page.trackId, page.albumId);
-});
-
-chrome.commands.onCommand.addListener((command) => {
-    if (command === 'download_playing_track') {
-        chrome.tabs.query({
-            url: chrome.runtime.getManifest().content_scripts[0].matches,
-            audible: true
-        }, (tabs) => {
-            tabs.forEach((tab) => {
-                chrome.tabs.sendMessage(tab.id, 'downloadCurrentTrack');
-            });
-        });
-    }
-});
-
 chrome.downloads.onChanged.addListener((delta) => {
     if (!('state' in delta)) { // состояние не изменилось (начало загрузки)
         fisher.utils.getDownload(delta.id).then(() => chrome.downloads.setShelfEnabled(true));
