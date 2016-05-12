@@ -38,10 +38,15 @@ function createManifest() {
                 strict_min_version: '48.0a1'
             }
         };
-    } else if (isChromium) {
+    }
+    if (isChromium) {
         manifest.optional_permissions = [
             'background'
         ];
+        manifest.minimum_chrome_version = '49.0';
+    }
+    if (isOpera) {
+        manifest.minimum_chrome_version = '49.0';
     }
 
     const newManifest = JSON.stringify(manifest, null, 2).replace(/[\n]/g, os.EOL) + os.EOL;

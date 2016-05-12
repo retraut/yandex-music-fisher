@@ -25,7 +25,14 @@ module.exports = {
         loaders: [{
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            query: {
+                plugins: [
+                    'syntax-async-functions',
+                    'transform-async-to-generator',
+                    'transform-strict-mode'
+                ]
+            }
         }]
     },
     plugins: [
