@@ -6,7 +6,6 @@ const storage = {
         albumCoverSizeId3: '400x400',
         enumerateAlbums: true,
         enumeratePlaylists: false,
-        shouldNotifyAboutUpdates: true,
         singleClickDownload: false,
         backgroundDownload: false,
         shouldUseFolder: false,

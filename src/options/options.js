@@ -3,7 +3,6 @@ const checkboxes = [
     'shouldDownloadCover',
     'enumerateAlbums',
     'enumeratePlaylists',
-    'shouldNotifyAboutUpdates',
     'singleClickDownload',
     'backgroundDownload',
     'shouldUseFolder'

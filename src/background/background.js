@@ -9,8 +9,6 @@ const downloader = require('./downloader');
 const version = chrome.runtime.getManifest().version;
 const fisher = {utils, yandex: new Yandex(), storage, downloader};
 
-let distributionUrl;
-
 window.fisher = fisher;
 
 ga('create', 'UA-65530110-1', 'auto');
@@ -121,61 +119,4 @@ chrome.downloads.onChanged.addListener((delta) => {
     });
 });
 
-chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
-    if (notificationId !== 'yandex-music-fisher-update') {
-        return;
-    }
-
-    const FIRST_BUTTON_INDEX = 0;
-    const SECOND_BUTTON_INDEX = 1;
-
-    if (buttonIndex === FIRST_BUTTON_INDEX) {
-        chrome.downloads.showDefaultFolder();
-        chrome.notifications.clear(notificationId);
-        chrome.downloads.download({
-            url: distributionUrl,
-            conflictAction: 'overwrite',
-            saveAs: false
-        });
-    } else if (buttonIndex === SECOND_BUTTON_INDEX) {
-        chrome.tabs.create({
-            url: 'https://github.com/egoroof/yandex-music-fisher/releases'
-        });
-    }
-});
-
-async function loadBackground() {
-    await storage.load();
-    if (!storage.current.shouldNotifyAboutUpdates) {
-        console.info('Updater notifications are disabled');
-        return;
-    }
-
-    let updateInfo;
-
-    try {
-        updateInfo = await fisher.utils.checkUpdate();
-    } catch (e) {
-        console.error(e);
-    }
-    if (!updateInfo.isUpdateAvailable) {
-        return;
-    }
-    distributionUrl = updateInfo.distUrl;
-    chrome.notifications.create('yandex-music-fisher-update', {
-        type: 'basic',
-        iconUrl: '/background/img/icon.png',
-        title: 'Yandex Music Fisher',
-        message: `Доступно обновление ${updateInfo.version}`,
-        contextMessage: 'Обновления устанавливаются вручную!',
-        buttons: [{
-            title: 'Скачать обновление',
-            iconUrl: '/background/img/download.png'
-        }, {
-            title: 'Просмотреть изменения'
-        }],
-        isClickable: false
-    });
-}
-
-loadBackground();
+storage.load();
