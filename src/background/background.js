@@ -16,14 +16,6 @@ ga('set', 'checkProtocolTask', null); // разрешает протокол "ch
 ga('set', 'page', '/home');
 ga('send', 'event', 'load', version);
 
-window.onerror = (message, file, line, col, error) => {
-    const relativePattern = /chrome-extension:\/\/[^\/]+/g;
-    const stack = error.stack.replace(relativePattern, '').replace(/\n/g, '');
-
-    console.error(error.stack);
-    ga('send', 'event', 'onerror', `${version}: ${stack}`);
-};
-
 chrome.browserAction.setBadgeBackgroundColor({
     color: [100, 100, 100, 255]
 });

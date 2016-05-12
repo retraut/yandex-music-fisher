@@ -3,8 +3,6 @@ const $ = document.getElementById.bind(document);
 let background;
 let updateIntervalId;
 
-window.onerror = (message, file, line, col, error) => background.onerror(message, file, line, col, error);
-
 function generateListView(entity) {
     const totalTrackCount = entity.tracks.length;
     const totalStatus = {
