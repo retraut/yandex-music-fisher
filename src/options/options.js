@@ -34,14 +34,15 @@ function afterCheckboxChanged(checkbox) { // изменение UI
             $('folder').setAttribute('disabled', 'disabled');
         }
     } else if (checkbox === 'backgroundDownload') {
+        if (!PLATFORM_CHROMIUM) {
+            $('backgroundDownload').parentNode.parentNode.parentNode.style.display = 'none';
+            return;
+        }
+
         const permissions = {
             permissions: ['background']
         };
         chrome.permissions.contains(permissions, (contains) => {
-            if ('lastError' in chrome.runtime) { // opera
-                backgroundPage.console.info(chrome.runtime.lastError.message);
-                $('backgroundDownload').parentNode.parentNode.parentNode.style.display = 'none';
-            }
             if (contains && !checked) { // btnReset
                 chrome.permissions.remove(permissions);
             }
@@ -57,6 +58,10 @@ checkboxes.forEach((checkbox) => {
         afterCheckboxChanged(checkbox);
 
         if (checkbox === 'backgroundDownload') {
+            if (!PLATFORM_CHROMIUM) {
+                return;
+            }
+
             const permissions = {
                 permissions: ['background']
             };

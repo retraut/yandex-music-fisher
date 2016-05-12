@@ -4,9 +4,9 @@ const path = require('path');
 const JSZip = require('jszip');
 const manifest = require('../src/manifest.json');
 
-const isFirefox = process.argv[2] === '--firefox';
 const isOpera = process.argv[2] === '--opera';
-const isChrome = !isFirefox && !isOpera;
+const isFirefox = process.argv[2] === '--firefox';
+const isChromium = !isFirefox && !isOpera;
 
 const platform = (isFirefox) ? 'firefox' : (isOpera) ? 'opera' : 'chromium';
 const distFolder = path.join(path.dirname(__dirname), 'dist', platform);
@@ -38,7 +38,7 @@ function createManifest() {
                 strict_min_version: '48.0a1'
             }
         };
-    } else if (isChrome) {
+    } else if (isChromium) {
         manifest.optional_permissions = [
             'background'
         ];

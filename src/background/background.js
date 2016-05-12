@@ -21,13 +21,15 @@ chrome.browserAction.setBadgeBackgroundColor({
 });
 fisher.utils.updateBadge();
 
-chrome.runtime.onInstalled.addListener((details) => { // установка или обновление расширения
-    if (details.reason === 'install') {
-        ga('send', 'event', 'install', version);
-    } else if (details.reason === 'update' && details.previousVersion !== version) {
-        ga('send', 'event', 'update', `${details.previousVersion} > ${version}`);
-    }
-});
+if (!PLATFORM_FIREFOX) {
+    chrome.runtime.onInstalled.addListener((details) => { // установка или обновление расширения
+        if (details.reason === 'install') {
+            ga('send', 'event', 'install', version);
+        } else if (details.reason === 'update' && details.previousVersion !== version) {
+            ga('send', 'event', 'update', `${details.previousVersion} > ${version}`);
+        }
+    });
+}
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if ('status' in changeInfo && changeInfo.status === 'loading') { // переход по новому URL

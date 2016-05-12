@@ -1,8 +1,10 @@
 const path = require('path');
+const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const isFirefox = process.argv[2] === '--firefox';
 const isOpera = process.argv[2] === '--opera';
+const isFirefox = process.argv[2] === '--firefox';
+const isChromium = !isFirefox && !isOpera;
 
 const platform = (isFirefox) ? 'firefox' : (isOpera) ? 'opera' : 'chromium';
 const distFolder = path.join(__dirname, 'dist', platform);
@@ -41,6 +43,11 @@ module.exports = {
             to: path.join(distFolder, 'background')
         }], {
             ignore: ['*.js']
+        }),
+        new webpack.DefinePlugin({
+            PLATFORM_OPERA: isOpera,
+            PLATFORM_FIREFOX: isFirefox,
+            PLATFORM_CHROMIUM: isChromium
         })
     ]
 };
