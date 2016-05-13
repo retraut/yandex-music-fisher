@@ -9,7 +9,7 @@
     "build:chromium": "webpack && node tools/post_build.js",
     "build:firefox": "webpack --firefox",
     "build:opera": "webpack --opera && node tools/post_build.js --opera",
-    "lint": "eslint -c tools/.eslintrc.js --ignore-pattern src/vendor/** src/**/*.js",
+    "lint": "eslint -c tools/.eslintrc.js --ignore-pattern src/vendor/*.js src/**/*.js",
     "increment-version:major": "node tools/increment_version.js --version=major",
     "increment-version:minor": "node tools/increment_version.js --version=minor",
     "increment-version:patch": "node tools/increment_version.js --version=patch",
