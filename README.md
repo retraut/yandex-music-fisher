@@ -17,29 +17,24 @@
 
 ### Установка
 
-[Скачайте архив по этой ссылке](https://github.com/egoroof/yandex-music-fisher/releases/download/v1.10.0/yandex-music-fisher_1.10.0.zip),
-извлеките в текущую папку, откройте страницу расширений в браузере и перенесите туда мышкой извлечённую папку __yandex-music-fisher__.
-Затем в браузере появится новое расширение:
 
-![Установка](/readme_img/install.gif "Установка")
-
-Обновляется расширение так же. Когда появится обновление, расширение оповестит вас.
+Chrome, Яндекс.Браузер: [Интернет-магазин Chrome](https://chrome.google.com/webstore/detail/yandex-music-fisher/gkdpmbjlfgjbnleinnojgpgoljaokbni)
 
 ### Как пользоваться
 
-Откройте страницу на [Яндекс.Музыка](https://music.yandex.ru/) с нужным ![blue](/readme_img/blue.png) треком,
-![yellow](/readme_img/yellow.png) альбомом или ![green](/readme_img/green.png) плейлистом - иконка изменит цвет в зависимости
+Откройте страницу на [Яндекс.Музыка](https://music.yandex.ru/) с нужным ![blue](readme_img/blue.png) треком,
+![yellow](readme_img/yellow.png) альбомом или ![green](readme_img/green.png) плейлистом - иконка изменит цвет в зависимости
 от открытой страницы. Нажав на неё откроется всплывающее окно с информацией о загрузке и кнопкой для начала скачивания.
 
-![Использование](/readme_img/usage.gif "Использование")
+![Использование](readme_img/usage.gif "Использование")
 
 После нажатия на кнопку скачивания начнётся загрузка. Прогресс виден на вкладке "Загрузки":
 
-![Загрузки](/readme_img/loader.png)
+![Загрузки](readme_img/loader.png)
 
 На странице исполнителя отметьте нужные альбомы и качайте дискографию:
 
-![Дискография](/readme_img/discography.png)
+![Дискография](readme_img/discography.png)
 
 На [Яндекс.Радио](https://radio.yandex.ru/) выберите жанр для прослушивания и качайте играющие треки.
 
