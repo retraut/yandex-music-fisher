@@ -10,15 +10,10 @@
 
 [Список изменений](https://github.com/egoroof/yandex-music-fisher/releases)
 
-### Что нужно
-
-Нужен браузер на движке Chromium: [Chrome](https://www.google.com/chrome) (рекомендуется),
-[Яндекс.Браузер](https://browser.yandex.ru), [Opera](https://www.opera.com) или подобный.
-
 ### Установка
 
-
-Chrome, Яндекс.Браузер: [Интернет-магазин Chrome](https://chrome.google.com/webstore/detail/yandex-music-fisher/gkdpmbjlfgjbnleinnojgpgoljaokbni)
+Chrome, Яндекс.Браузер:
+[Интернет-магазин Chrome](https://chrome.google.com/webstore/detail/yandex-music-fisher/gkdpmbjlfgjbnleinnojgpgoljaokbni)
 
 ### Как пользоваться
 
