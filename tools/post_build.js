@@ -73,7 +73,7 @@ function createArchive() {
         const ext = (isFirefox) ? 'xpi' : 'zip';
         const archiveName = `yandex-music-fisher_${manifest.version}_${platform}.${ext}`;
 
-        fs.writeFileSync(archiveName, buffer);
+        fs.writeFileSync(path.join('dist', archiveName), buffer);
         console.log(`${archiveName} was created`);
     }).catch((e) => console.error(e));
 }

@@ -56,7 +56,7 @@ function uploadGithubAsset(platform) {
     const ext = (platform === 'firefox') ? 'xpi' : 'zip';
     const assetName = `yandex-music-fisher_${manifest.version}_${platform}.${ext}`;
     const uploadUrl = uploadUrlTemplate.expand({name: assetName});
-    const buffer = fs.readFileSync(path.join(path.dirname(__dirname), assetName));
+    const buffer = fs.readFileSync(path.join(path.dirname(__dirname), 'dist', assetName));
 
     return post(uploadUrl, 'application/zip', buffer);
 }
