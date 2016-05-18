@@ -23,7 +23,7 @@ function httpsGet(url) {
             res.on('end', () => resolve(JSON.parse(data)));
         });
 
-        request.on('error', (e) => reject(new Error(e)));
+        request.on('error', reject);
         request.end();
     });
 }

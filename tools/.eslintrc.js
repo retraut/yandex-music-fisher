@@ -4,10 +4,10 @@ module.exports = {
         "es6": true,
         "browser": true,
         "commonjs": true,
-        "node": true
+        "node": true,
+        "webextensions": true
     },
     "globals": {
-        "chrome": false,
         "PLATFORM_OPERA": false,
         "PLATFORM_FIREFOX": false,
         "PLATFORM_CHROMIUM": false

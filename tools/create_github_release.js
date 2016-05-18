@@ -35,8 +35,8 @@ function post(postUrl, type, data) {
         });
 
         request.write(data);
+        request.on('error', reject);
         request.end();
-        request.on('error', (e) => reject(new Error(e)));
     });
 }
 
