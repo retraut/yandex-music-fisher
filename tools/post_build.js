@@ -42,9 +42,11 @@ function createManifest() {
     if (isChromium) {
         manifest.optional_permissions = ['background'];
         manifest.permissions.push('downloads.shelf');
-    }
-    if (isChromium || isOpera) {
         manifest.minimum_chrome_version = '49.0';
+        manifest.incognito = 'split';
+    }
+    if (isOpera) {
+        manifest.minimum_opera_version = '36.0';
         manifest.incognito = 'split';
     }
 
