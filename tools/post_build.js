@@ -40,14 +40,12 @@ function createManifest() {
         };
     }
     if (isChromium) {
-        manifest.optional_permissions = [
-            'background'
-        ];
-        manifest.minimum_chrome_version = '49.0';
+        manifest.optional_permissions = ['background'];
         manifest.permissions.push('downloads.shelf');
     }
-    if (isOpera) {
+    if (isChromium || isOpera) {
         manifest.minimum_chrome_version = '49.0';
+        manifest.incognito = 'split';
     }
 
     const newManifest = JSON.stringify(manifest, null, 2).replace(/[\n]/g, os.EOL) + os.EOL;
