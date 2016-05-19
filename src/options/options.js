@@ -4,7 +4,6 @@ const checkboxes = [
     'enumerateAlbums',
     'enumeratePlaylists',
     'singleClickDownload',
-    'backgroundDownload',
     'shouldUseFolder'
 ];
 const selects = [
@@ -15,8 +14,16 @@ const selects = [
 const texts = [
     'folder'
 ];
+const backgroundPermission = {
+    permissions: ['background']
+};
 
 let background;
+
+if (PLATFORM_CHROMIUM) {
+    $('backgroundDownload').parentNode.parentNode.parentNode.style.display = '';
+    checkboxes.push('backgroundDownload');
+}
 
 function afterCheckboxChanged(checkbox) { // изменение UI
     const checked = $(checkbox).checked;
@@ -34,17 +41,9 @@ function afterCheckboxChanged(checkbox) { // изменение UI
             $('folder').setAttribute('disabled', 'disabled');
         }
     } else if (checkbox === 'backgroundDownload') {
-        if (!PLATFORM_CHROMIUM) {
-            $('backgroundDownload').parentNode.parentNode.parentNode.style.display = 'none';
-            return;
-        }
-
-        const permissions = {
-            permissions: ['background']
-        };
-        chrome.permissions.contains(permissions, (contains) => {
+        chrome.permissions.contains(backgroundPermission, (contains) => {
             if (contains && !checked) { // btnReset
-                chrome.permissions.remove(permissions);
+                chrome.permissions.remove(backgroundPermission);
             }
         });
     }
@@ -58,25 +57,10 @@ checkboxes.forEach((checkbox) => {
         afterCheckboxChanged(checkbox);
 
         if (checkbox === 'backgroundDownload') {
-            if (!PLATFORM_CHROMIUM) {
-                return;
-            }
-
-            const permissions = {
-                permissions: ['background']
-            };
             if (checked) {
-                chrome.permissions.request(permissions, (granted) => {
-                    if (!granted) {
-                        background.fisher.storage.setItem(checkbox, false);
-                    }
-                });
+                chrome.permissions.request(backgroundPermission);
             } else {
-                chrome.permissions.remove(permissions, (removed) => {
-                    if (!removed) {
-                        background.fisher.storage.setItem(checkbox, false);
-                    }
-                });
+                chrome.permissions.remove(backgroundPermission);
             }
         }
     });
