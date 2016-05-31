@@ -27,6 +27,13 @@ if (!PLATFORM_FIREFOX) {
             ga('send', 'event', 'install', version);
         } else if (details.reason === 'update' && details.previousVersion !== version) {
             ga('send', 'event', 'update', `${details.previousVersion} > ${version}`);
+
+            const majorPrevVersion = details.previousVersion.split('.')[0];
+            if (majorPrevVersion === '0' || majorPrevVersion === '1') {
+                chrome.tabs.create({
+                    url: '/background/migration.html'
+                });
+            }
         }
     });
 }
