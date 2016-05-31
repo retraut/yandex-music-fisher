@@ -17,19 +17,11 @@ Chrome, Яндекс.Браузер:
 
 ### Как пользоваться
 
+[Демонстрация](https://raw.githubusercontent.com/egoroof/yandex-music-fisher/master/readme_img/usage.gif)
+
 Откройте страницу на [Яндекс.Музыка](https://music.yandex.ru/) с нужным ![blue](readme_img/blue.png) треком,
 ![yellow](readme_img/yellow.png) альбомом или ![green](readme_img/green.png) плейлистом - иконка изменит цвет в зависимости
 от открытой страницы. Нажав на неё откроется всплывающее окно с информацией о загрузке и кнопкой для начала скачивания.
-
-[Демонстрация](https://raw.githubusercontent.com/egoroof/yandex-music-fisher/master/readme_img/usage.gif)
-
-После нажатия на кнопку скачивания начнётся загрузка. Прогресс виден на вкладке "Загрузки":
-
-![Загрузки](readme_img/loader.png)
-
-На странице исполнителя отметьте нужные альбомы и качайте дискографию:
-
-![Дискография](readme_img/discography.png)
 
 На [Яндекс.Радио](https://radio.yandex.ru/) выберите жанр для прослушивания и качайте играющие треки.
 
