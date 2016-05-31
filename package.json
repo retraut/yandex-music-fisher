@@ -4,8 +4,7 @@
   "description": "Downloader for Яндекс.Музыка & Яндекс.Радио (Chromium extension)",
   "main": "not-a-package",
   "scripts": {
-    "build": "npm prune && npm update && npm run build:all",
-    "build:all": "npm run build:chromium && npm run build:firefox && npm run build:opera",
+    "build": "npm run build:chromium && npm run build:firefox && npm run build:opera",
     "build:chromium": "webpack && node tools/post_build.js",
     "build:firefox": "webpack --firefox && node tools/post_build.js --firefox",
     "build:opera": "webpack --opera && node tools/post_build.js --opera",

@@ -62,10 +62,14 @@ Chrome, Яндекс.Браузер:
 - [GitHub](https://github.com/egoroof/yandex-music-fisher)
 - [Bitbucket](https://bitbucket.org/egoroof/yandex-music-fisher)
 
-### Сборка расширения (для разработчиков)
+### Сборка расширения
 
-1. Устанавливаем [Node.js](https://nodejs.org/en/) 6+.
-2. Обновляем зависимости и собираем расширение: `npm run build`
+Для сборки нужен [Node.js](https://nodejs.org/en/) 6+.
+
+```
+npm install
+npm run build
+```
 
 Загружать браузером распакованное расширение после сборки из папки `dist`.
 
