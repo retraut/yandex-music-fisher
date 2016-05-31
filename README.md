@@ -15,6 +15,8 @@
 Chrome, Яндекс.Браузер:
 [Интернет-магазин Chrome](https://chrome.google.com/webstore/detail/yandex-music-fisher/gkdpmbjlfgjbnleinnojgpgoljaokbni)
 
+Opera: [Дополнения к Opera](https://addons.opera.com/ru/extensions/details/yandex-music-fisher/)
+
 ### Как пользоваться
 
 [Демонстрация](https://raw.githubusercontent.com/egoroof/yandex-music-fisher/master/readme_img/usage.gif)
