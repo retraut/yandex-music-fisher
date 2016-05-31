@@ -3,6 +3,16 @@ const $ = document.getElementById.bind(document);
 let background;
 let updateIntervalId;
 
+window.addEventListener('error', (e) => {
+    background.console.warn(e.error.stack);
+    e.returnValue = false;
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    background.console.warn(e.reason);
+    e.returnValue = false;
+});
+
 function generateListView(entity) {
     const totalTrackCount = entity.tracks.length;
     const totalStatus = {
@@ -244,31 +254,27 @@ $('startDownloadBtn').addEventListener('click', () => {
 
     $('downloadBtn').click();
     switch (downloadType) {
-        case 'track':
-        {
+        case 'track': {
             const trackId = $('startDownloadBtn').getAttribute('data-trackId');
             const albumId = $('startDownloadBtn').getAttribute('data-albumId');
 
             background.fisher.downloader.downloadTrack(trackId, albumId);
             break;
         }
-        case 'album':
-        {
+        case 'album': {
             const albumId = $('startDownloadBtn').getAttribute('data-albumId');
 
             background.fisher.downloader.downloadAlbum(albumId, null);
             break;
         }
-        case 'playlist':
-        {
+        case 'playlist': {
             const username = $('startDownloadBtn').getAttribute('data-username');
             const playlistId = $('startDownloadBtn').getAttribute('data-playlistId');
 
             background.fisher.downloader.downloadPlaylist(username, playlistId);
             break;
         }
-        case 'artistOrLabel':
-        {
+        case 'artistOrLabel': {
             const name = $('startDownloadBtn').getAttribute('data-name');
             const albumElems = document.getElementsByClassName('album');
             const compilationElems = document.getElementsByClassName('compilation');

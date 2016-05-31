@@ -20,6 +20,16 @@ const backgroundPermission = {
 
 let background;
 
+window.addEventListener('error', (e) => {
+    background.console.warn(e.error.stack);
+    e.returnValue = false;
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    background.console.warn(e.reason);
+    e.returnValue = false;
+});
+
 if (PLATFORM_CHROMIUM) {
     $('backgroundDownload').parentNode.parentNode.parentNode.style.display = '';
     checkboxes.push('backgroundDownload');
