@@ -10,7 +10,7 @@
     "build:opera": "webpack --opera && node tools/post_build.js --opera",
     "lint": "eslint -c tools/.eslintrc.js --ignore-pattern src/vendor/**/*.js src/**/*.js",
     "preversion": "npm run lint",
-    "version": "npm run build && npm run create-github-release && git add package.json src/manifest.json",
+    "version": "npm run build && npm run create-github-release && git add package.json",
     "postversion": "git push && git push --tags",
     "create-github-release": "node tools/create_github_release.js",
     "show-download-stats": "node tools/show_download_stats.js",

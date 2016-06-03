@@ -4,7 +4,7 @@ const url = require('url');
 const path = require('path');
 const UriTemplate = require('uritemplate');
 const tokens = require('./tokens.json');
-const manifest = require('../src/manifest.json');
+const pack = require('../package.json');
 
 let uploadUrlTemplate;
 
@@ -43,9 +43,9 @@ function post(postUrl, type, data) {
 function createGithubRelease() {
     const releasesUrl = 'https://api.github.com/repos/egoroof/yandex-music-fisher/releases';
     const data = JSON.stringify({
-        tag_name: `v${manifest.version}`,
+        tag_name: `v${pack.version}`,
         target_commitish: 'master',
-        name: manifest.version,
+        name: pack.version,
         draft: true
     });
 
@@ -54,7 +54,7 @@ function createGithubRelease() {
 
 function uploadGithubAsset(platform) {
     const ext = (platform === 'firefox') ? 'xpi' : 'zip';
-    const assetName = `yandex-music-fisher_${manifest.version}_${platform}.${ext}`;
+    const assetName = `yandex-music-fisher_${pack.version}_${platform}.${ext}`;
     const uploadUrl = uploadUrlTemplate.expand({name: assetName});
     const buffer = fs.readFileSync(path.join(path.dirname(__dirname), 'dist', assetName));
 
@@ -63,11 +63,14 @@ function uploadGithubAsset(platform) {
 
 createGithubRelease()
     .then((response) => {
-        console.log(`GitHub release draft '${manifest.version}' was created`);
+        console.log(`GitHub release draft '${pack.version}' was created`);
         uploadUrlTemplate = UriTemplate.parse(response.upload_url);
     })
     .then(() => uploadGithubAsset('chromium'))
     // .then(() => uploadGithubAsset('firefox'))
     .then(() => uploadGithubAsset('opera'))
     .then(() => console.log('All assets were downloaded'))
-    .catch((e) => console.error(e));
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });

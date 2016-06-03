@@ -73,11 +73,14 @@ function createArchive() {
         }
     }).then((buffer) => {
         const ext = (isFirefox) ? 'xpi' : 'zip';
-        const archiveName = `yandex-music-fisher_${manifest.version}_${platform}.${ext}`;
+        const archiveName = `yandex-music-fisher_${pack.version}_${platform}.${ext}`;
 
         fs.writeFileSync(path.join('dist', archiveName), buffer);
         console.log(`${archiveName} was created`);
-    }).catch((e) => console.error(e));
+    }).catch((e) => {
+        console.error(e);
+        process.exit(1);
+    });
 }
 
 createManifest();
