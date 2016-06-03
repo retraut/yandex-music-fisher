@@ -3,6 +3,7 @@ const os = require('os');
 const path = require('path');
 const JSZip = require('jszip');
 const manifest = require('../src/manifest.json');
+const pack = require('../package.json');
 
 const isOpera = process.argv[2] === '--opera';
 const isFirefox = process.argv[2] === '--firefox';
@@ -31,6 +32,7 @@ function readDirSync(dir, filelist) {
 }
 
 function createManifest() {
+    manifest.version = pack.version;
     if (isFirefox) {
         manifest.applications = {
             gecko: {

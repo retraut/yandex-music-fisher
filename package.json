@@ -1,7 +1,7 @@
 {
   "name": "yandex-music-fisher",
-  "version": "0.0.0-not-a-package",
-  "description": "Downloader for Яндекс.Музыка & Яндекс.Радио (Chromium extension)",
+  "version": "2.0.3",
+  "description": "Downloader for Яндекс.Музыка & Яндекс.Радио (Web Extension)",
   "main": "not-a-package",
   "scripts": {
     "build": "npm run build:chromium && npm run build:firefox && npm run build:opera",
@@ -9,9 +9,9 @@
     "build:firefox": "webpack --firefox && node tools/post_build.js --firefox",
     "build:opera": "webpack --opera && node tools/post_build.js --opera",
     "lint": "eslint -c tools/.eslintrc.js --ignore-pattern src/vendor/**/*.js src/**/*.js",
-    "increment-version:major": "node tools/increment_version.js --major",
-    "increment-version:minor": "node tools/increment_version.js --minor",
-    "increment-version:patch": "node tools/increment_version.js --patch",
+    "preversion": "npm run lint",
+    "version": "npm run build && npm run create-github-release && git add package.json src/manifest.json",
+    "postversion": "git push && git push --tags",
     "create-github-release": "node tools/create_github_release.js",
     "show-download-stats": "node tools/show_download_stats.js",
     "cover-sizes": "node tools/cover_sizes.js"
