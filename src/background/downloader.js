@@ -141,8 +141,7 @@ downloader.download = async() => {
         chrome.downloads.download({
             url: writer.getURL(),
             filename: savePath,
-            conflictAction: 'overwrite',
-            saveAs: false
+            conflictAction: 'overwrite'
         }, onChromeDownloadStart);
     }
 
@@ -197,8 +196,7 @@ downloader.download = async() => {
         chrome.downloads.download({
             url: localUrl,
             filename: savePath,
-            conflictAction: 'overwrite',
-            saveAs: false
+            conflictAction: 'overwrite'
         }, onChromeDownloadStart);
     }
 };
