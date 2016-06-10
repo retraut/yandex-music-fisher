@@ -1,8 +1,7 @@
 {
   "name": "yandex-music-fisher",
   "version": "2.0.3",
-  "description": "Downloader for Яндекс.Музыка & Яндекс.Радио (Web Extension)",
-  "main": "not-a-package",
+  "private": true,
   "scripts": {
     "build": "npm run build:chromium && npm run build:firefox && npm run build:opera",
     "build:chromium": "webpack && node tools/post_build.js",
@@ -16,16 +15,6 @@
     "show-download-stats": "node tools/show_download_stats.js",
     "cover-sizes": "node tools/cover_sizes.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/egoroof/yandex-music-fisher.git"
-  },
-  "author": "egoroof",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/egoroof/yandex-music-fisher/issues"
-  },
-  "homepage": "https://github.com/egoroof/yandex-music-fisher#readme",
   "devDependencies": {
     "babel-core": "6.9.1",
     "babel-eslint": "6.0.4",
