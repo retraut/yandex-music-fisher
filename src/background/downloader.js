@@ -138,8 +138,9 @@ downloader.download = async() => {
             savePath = `${fisher.storage.getItem('folder')}/${savePath}`;
         }
 
+        entity.browserDownloadUrl = writer.getURL();
         chrome.downloads.download({
-            url: writer.getURL(),
+            url: entity.browserDownloadUrl,
             filename: savePath,
             conflictAction: 'overwrite'
         }, onChromeDownloadStart);
@@ -186,7 +187,7 @@ downloader.download = async() => {
         }
 
         const blob = new Blob([buffer], {type: 'image/jpeg'});
-        const localUrl = window.URL.createObjectURL(blob);
+        entity.browserDownloadUrl = window.URL.createObjectURL(blob);
 
         let savePath = entity.savePath;
         if (fisher.storage.getItem('shouldUseFolder')) {
@@ -194,7 +195,7 @@ downloader.download = async() => {
         }
 
         chrome.downloads.download({
-            url: localUrl,
+            url: entity.browserDownloadUrl,
             filename: savePath,
             conflictAction: 'overwrite'
         }, onChromeDownloadStart);
@@ -221,7 +222,8 @@ downloader.downloadTrack = (trackId, albumId, folder) => {
             lyrics: null,
             loadedBytes: 0,
             attemptCount: 0,
-            browserDownloadId: null
+            browserDownloadId: null,
+            browserDownloadUrl: null
         };
 
         if ('version' in track) {
@@ -285,7 +287,9 @@ downloader.downloadAlbum = (albumId, folder) => {
                 url: `https://${album.coverUri.replace('%%', fisher.storage.getItem('albumCoverSize'))}`,
                 savePath: `${saveDir}/cover.jpg`,
                 loadedBytes: 0,
-                attemptCount: 0
+                attemptCount: 0,
+                browserDownloadId: null,
+                browserDownloadUrl: null
             };
         }
 
@@ -313,7 +317,8 @@ downloader.downloadAlbum = (albumId, folder) => {
                     trackCountInAlbum: volume.length,
                     albumPosition,
                     albumCount: album.volumes.length,
-                    browserDownloadId: null
+                    browserDownloadId: null,
+                    browserDownloadUrl: null
                 };
 
                 if ('version' in track) {
@@ -384,7 +389,8 @@ downloader.downloadPlaylist = (username, playlistId) => {
                 savePath: null,
                 loadedBytes: 0,
                 attemptCount: 0,
-                browserDownloadId: null
+                browserDownloadId: null,
+                browserDownloadUrl: null
             };
 
             if ('version' in track) {

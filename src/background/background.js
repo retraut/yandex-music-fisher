@@ -57,41 +57,38 @@ chrome.tabs.onActivated.addListener((activeInfo) => { // выбор другой
 });
 
 chrome.downloads.onChanged.addListener((delta) => {
-    if (!('state' in delta)) { // состояние не изменилось (начало загрузки)
-        if (PLATFORM_CHROMIUM) {
-            fisher.utils.getDownload(delta.id).then(() => chrome.downloads.setShelfEnabled(true));
-        }
-        // не нашёл способа перехватывать ошибки, когда другое расширение отключает анимацию загрузок
+    const entity = downloader.getEntityByBrowserDownloadId(delta.id);
+    if (!entity) { // загрузка не от нашего расширения
         return;
     }
-    fisher.utils.getDownload(delta.id).then((download) => {
-        const entity = downloader.getEntityByBrowserDownloadId(delta.id);
 
-        if (entity) {
-            // не попадут: архив с обновлением,
-            // трек и обложка при удалённой сущности в процессе сохранения BLOB (теоретически, но маловероятно)
-            if (delta.state.current === 'complete') {
-                entity.status = downloader.STATUS.FINISHED;
-                fisher.utils.updateBadge();
-            } else if (delta.state.current === 'interrupted') {
-                entity.attemptCount++;
-                entity.loadedBytes = 0;
-                if (entity.attemptCount < 3) {
-                    fisher.utils.delay(10000).then(() => {
-                        entity.status = downloader.STATUS.WAITING;
-                        downloader.download();
-                    });
-                } else {
-                    entity.status = downloader.STATUS.INTERRUPTED;
-                    console.error(download.error, entity);
-                }
-            }
-            window.URL.revokeObjectURL(download.url);
+    if (!delta.state) { // состояние не изменилось (начало загрузки)
+        if (PLATFORM_CHROMIUM) {
+            chrome.downloads.setShelfEnabled(true);
         }
-        chrome.downloads.erase({
-            id: delta.id
-        });
-        downloader.activeThreadCount--;
-        downloader.download();
+        return;
+    }
+    const state = delta.state.current; // in_progress -> interrupted || complete
+    if (state === 'complete') {
+        entity.status = downloader.STATUS.FINISHED;
+        fisher.utils.updateBadge();
+    } else if (state === 'interrupted') {
+        entity.attemptCount++;
+        entity.loadedBytes = 0;
+        if (entity.attemptCount < 3) {
+            fisher.utils.delay(10000).then(() => {
+                entity.status = downloader.STATUS.WAITING;
+                downloader.download();
+            });
+        } else {
+            entity.status = downloader.STATUS.INTERRUPTED;
+            console.error(delta, entity);
+        }
+    }
+    window.URL.revokeObjectURL(entity.browserDownloadUrl);
+    chrome.downloads.erase({
+        id: delta.id
     });
+    downloader.activeThreadCount--;
+    downloader.download();
 });
