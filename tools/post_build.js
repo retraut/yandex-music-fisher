@@ -37,7 +37,7 @@ function createManifest() {
         manifest.applications = {
             gecko: {
                 id: 'yandex-music-fisher@egoroof.ru',
-                strict_min_version: '48.0a1'
+                strict_min_version: '49.0a1'
             }
         };
     }

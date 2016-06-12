@@ -67,7 +67,7 @@ createGithubRelease()
         uploadUrlTemplate = UriTemplate.parse(response.upload_url);
     })
     .then(() => uploadGithubAsset('chromium'))
-    // .then(() => uploadGithubAsset('firefox'))
+    .then(() => uploadGithubAsset('firefox'))
     .then(() => uploadGithubAsset('opera'))
     .then(() => console.log('All assets were downloaded'))
     .catch((e) => {

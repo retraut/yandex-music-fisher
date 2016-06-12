@@ -67,7 +67,7 @@ downloader.download = async() => {
     }
 
     function onChromeDownloadStart(downloadId) {
-        if ('lastError' in chrome.runtime) {
+        if (chrome.runtime.lastError) {
             onInterruptEntity(chrome.runtime.lastError.message);
         } else {
             if (PLATFORM_CHROMIUM) {

@@ -7,7 +7,12 @@ const Yandex = require('./yandex');
 const storage = require('./storage');
 const downloader = require('./downloader');
 const version = chrome.runtime.getManifest().version;
-const fisher = {utils, yandex: new Yandex(), storage, downloader};
+const fisher = {
+    utils,
+    yandex: new Yandex(),
+    storage,
+    downloader
+};
 
 window.fisher = fisher;
 
@@ -19,7 +24,6 @@ ga('send', 'event', 'load', version);
 chrome.browserAction.setBadgeBackgroundColor({
     color: [100, 100, 100, 255]
 });
-fisher.utils.updateBadge();
 
 if (!PLATFORM_FIREFOX) {
     chrome.runtime.onInstalled.addListener((details) => { // установка или обновление расширения
@@ -38,15 +42,13 @@ if (!PLATFORM_FIREFOX) {
     });
 }
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if ('status' in changeInfo && changeInfo.status === 'loading') { // переход по новому URL
-        fisher.utils.updateTabIcon(tab);
-    }
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => { // изменение URL
+    fisher.utils.updateTabIcon(tab);
 });
 
-chrome.tabs.onActivated.addListener((activeInfo) => { // переключение вкладки
+chrome.tabs.onActivated.addListener((activeInfo) => { // выбор другой вкладки
     chrome.tabs.get(activeInfo.tabId, (tab) => {
-        if ('lastError' in chrome.runtime) {
+        if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError.message);
             return;
         }
