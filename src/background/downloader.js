@@ -160,7 +160,7 @@ downloader.download = async() => {
             const trackUrl = await fisher.yandex.getTrackUrl(entity.track.id);
             const buffer = await fisher.utils.fetchBuffer(trackUrl, onProgress);
 
-            await saveTrack(buffer);
+            saveTrack(buffer);
         } catch (e) {
             onInterruptEntity(e.message);
         }
