@@ -25,10 +25,6 @@ function fetchBuffer(url, onProgress) {
     });
 }
 
-function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function bytesToStr(bytes) {
     const KiB = 1024;
     const MiB = 1024 * KiB;
@@ -201,7 +197,6 @@ function updateBadge() {
 
 module.exports = {
     fetchBuffer,
-    delay,
     bytesToStr,
     addExtraZeros,
     durationToStr,

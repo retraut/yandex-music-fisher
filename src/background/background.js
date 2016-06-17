@@ -73,17 +73,9 @@ chrome.downloads.onChanged.addListener((delta) => {
         entity.status = downloader.STATUS.FINISHED;
         fisher.utils.updateBadge();
     } else if (state === 'interrupted') {
-        entity.attemptCount++;
         entity.loadedBytes = 0;
-        if (entity.attemptCount < 3) {
-            fisher.utils.delay(10000).then(() => {
-                entity.status = downloader.STATUS.WAITING;
-                downloader.download();
-            });
-        } else {
-            entity.status = downloader.STATUS.INTERRUPTED;
-            console.error(delta, entity);
-        }
+        entity.status = downloader.STATUS.INTERRUPTED;
+        console.error(delta, entity);
     }
     window.URL.revokeObjectURL(entity.browserDownloadUrl);
     chrome.downloads.erase({

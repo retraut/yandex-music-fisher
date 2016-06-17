@@ -229,18 +229,15 @@ $('downloadContainer').addEventListener('mousedown', (e) => {
         background.fisher.downloader.runAllThreads();
     } else if (isRestoreBtnClick) {
         if (isCover && entity.cover.status === background.fisher.downloader.STATUS.INTERRUPTED) {
-            entity.cover.attemptCount = 0;
             entity.cover.status = background.fisher.downloader.STATUS.WAITING;
             background.fisher.downloader.download();
         }
         if (isTrack) {
-            entity.attemptCount = 0;
             entity.status = background.fisher.downloader.STATUS.WAITING;
             background.fisher.downloader.download();
         } else if (isAlbum || isPlaylist) {
             entity.tracks.forEach((track) => {
                 if (track.status === background.fisher.downloader.STATUS.INTERRUPTED) {
-                    track.attemptCount = 0;
                     track.status = background.fisher.downloader.STATUS.WAITING;
                     background.fisher.downloader.download();
                 }

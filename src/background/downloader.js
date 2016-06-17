@@ -47,17 +47,10 @@ downloader.download = async() => {
     let coverBuffer;
     let trackAlbum;
 
-    async function onInterruptEntity(error) {
-        entity.attemptCount++;
+    function onInterruptEntity(error) {
         entity.loadedBytes = 0;
-        if (entity.attemptCount < 3) {
-            await fisher.utils.delay(10000);
-            entity.status = downloader.STATUS.WAITING;
-            downloader.download();
-        } else {
-            entity.status = downloader.STATUS.INTERRUPTED;
-            console.error(error, entity);
-        }
+        entity.status = downloader.STATUS.INTERRUPTED;
+        console.error(error, entity);
         downloader.activeThreadCount--;
         downloader.download();
     }
@@ -221,7 +214,6 @@ downloader.downloadTrack = (trackId, albumId, folder) => {
             savePath: '',
             lyrics: null,
             loadedBytes: 0,
-            attemptCount: 0,
             browserDownloadId: null,
             browserDownloadUrl: null
         };
@@ -287,7 +279,6 @@ downloader.downloadAlbum = (albumId, folder) => {
                 url: `https://${album.coverUri.replace('%%', fisher.storage.getItem('albumCoverSize'))}`,
                 savePath: `${saveDir}/cover.jpg`,
                 loadedBytes: 0,
-                attemptCount: 0,
                 browserDownloadId: null,
                 browserDownloadUrl: null
             };
@@ -312,7 +303,6 @@ downloader.downloadAlbum = (albumId, folder) => {
                     title: track.title,
                     savePath: null,
                     loadedBytes: 0,
-                    attemptCount: 0,
                     trackPosition,
                     trackCountInAlbum: volume.length,
                     albumPosition,
@@ -388,7 +378,6 @@ downloader.downloadPlaylist = (username, playlistId) => {
                 title: track.title,
                 savePath: null,
                 loadedBytes: 0,
-                attemptCount: 0,
                 browserDownloadId: null,
                 browserDownloadUrl: null
             };
